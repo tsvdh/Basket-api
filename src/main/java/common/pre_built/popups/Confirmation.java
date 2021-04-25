@@ -1,7 +1,7 @@
-package api.common.pre_built.popups;
+package common.pre_built.popups;
 
-import api.common.PathHandler;
-import api.common.pre_built.StyleHandler;
+import common.PathHandler;
+import common.pre_built.StyleHandler;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,26 +17,26 @@ import javafx.stage.Stage;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static api.common.pre_built.ButtonFactory.makeSmallButton;
+import static common.pre_built.ButtonFactory.makeSmallButton;
 
 
 public class Confirmation {
 
     private final static String QUESTION = "Do you want to perform the action?";
 
-    public static boolean getConfirmation() {
-        return getConfirmation(QUESTION);
+    public static boolean getConfirmation(StyleHandler styleHandler) {
+        return getConfirmation(QUESTION, styleHandler);
     }
 
-    public static boolean getConfirmation(String question) {
-        return getConfirmation(question, true);
+    public static boolean getConfirmation(String question, StyleHandler styleHandler) {
+        return getConfirmation(question, true, styleHandler);
     }
 
-    public static boolean getConfirmation(boolean show) {
-        return getConfirmation(QUESTION, show);
+    public static boolean getConfirmation(boolean show, StyleHandler styleHandler) {
+        return getConfirmation(QUESTION, show, styleHandler);
     }
 
-    public static boolean getConfirmation(String question, boolean show) {
+    public static boolean getConfirmation(String question, boolean show, StyleHandler styleHandler) {
         if (!show) {
             return true;
         }
@@ -84,7 +84,7 @@ public class Confirmation {
             confirmation.set(false);
         });
 
-        StyleHandler.applyStyle(scene);
+        styleHandler.applyStyle(scene);
 
         stage.setOnCloseRequest(Event :: consume);
         stage.showAndWait();

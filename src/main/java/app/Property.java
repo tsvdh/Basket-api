@@ -1,4 +1,4 @@
-package api.app;
+package app;
 
 import java.util.function.Function;
 

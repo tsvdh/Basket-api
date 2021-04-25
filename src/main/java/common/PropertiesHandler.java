@@ -1,6 +1,6 @@
-package api.common;
+package common;
 
-import api.app.Property;
+import app.Property;
 import java.util.Properties;
 
 abstract class PropertiesHandler {

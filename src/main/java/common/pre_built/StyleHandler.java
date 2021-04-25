@@ -1,13 +1,10 @@
-package api.common.pre_built;
+package common.pre_built;
 
-import api.common.PathHandler;
+import common.PathHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
-import java.net.URL;
 import java.util.function.Function;
-
-import static java.util.Objects.requireNonNull;
 
 public class StyleHandler {
 
@@ -21,6 +18,18 @@ public class StyleHandler {
         }
 
         private final Function<String, String> pathGetter;
+    }
+
+    private final String fileName;
+    private final Location location;
+
+    public StyleHandler(String fileName, Location location) {
+        this.fileName = fileName;
+        this.location = location;
+    }
+
+    public void applyStyle(Scene scene) {
+        applyStyle(scene, fileName, location);
     }
 
     public static void applyStyle(Scene scene, String fileName, Location location) {

@@ -1,8 +1,9 @@
-package api.app;
+package app;
 
-import api.common.ExternalPropertiesHandler;
-import api.common.InternalPropertiesHandler;
-import api.common.Version;
+import common.ExternalPropertiesHandler;
+import common.InternalPropertiesHandler;
+import common.Version;
+import common.pre_built.StyleHandler;
 
 public abstract class App {
 
@@ -10,6 +11,7 @@ public abstract class App {
 
     private InternalPropertiesHandler pomHandler;
     private ExternalPropertiesHandler settingsHandler;
+    private StyleHandler styleHandler;
 
     public InternalPropertiesHandler getPomHandler() {
         return pomHandler;
@@ -17,6 +19,17 @@ public abstract class App {
 
     public ExternalPropertiesHandler getSettingsHandler() {
         return settingsHandler;
+    }
+
+    public StyleHandler getStyleHandler() {
+        return styleHandler;
+    }
+
+    /**
+     * Override this method if you want to use another style sheet.
+     */
+    public StyleHandler makeStyleHandler() {
+        return new StyleHandler("clean", StyleHandler.Location.EXTERNAL);
     }
 
     public static void run() {
@@ -55,6 +68,7 @@ public abstract class App {
         app.pomHandler = InternalPropertiesHandler.newHandler("pom");
         InternalPropertiesHandler fallbackSettings = InternalPropertiesHandler.newHandler("settings");
         app.settingsHandler = ExternalPropertiesHandler.newHandler("settings", app.getAppName(), fallbackSettings);
+        app.styleHandler = app.makeStyleHandler();
 
         app.start();
 

@@ -1,4 +1,4 @@
-package api.common;
+package common;
 
 import org.jetbrains.annotations.Nullable;
 

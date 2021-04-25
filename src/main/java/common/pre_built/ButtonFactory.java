@@ -1,4 +1,4 @@
-package api.common.pre_built;
+package common.pre_built;
 
 import javafx.scene.control.Button;
 

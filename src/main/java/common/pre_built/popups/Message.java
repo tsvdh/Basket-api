@@ -1,7 +1,7 @@
-package api.common.pre_built.popups;
+package common.pre_built.popups;
 
-import api.common.PathHandler;
-import api.common.pre_built.StyleHandler;
+import common.PathHandler;
+import common.pre_built.StyleHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,11 +13,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import static api.common.pre_built.ButtonFactory.makeSmallButton;
+import static common.pre_built.ButtonFactory.makeSmallButton;
 
 public class Message {
 
-    public Message(String text, boolean warning) {
+    public Message(String text, boolean warning, StyleHandler styleHandler) {
         Button button = makeSmallButton("OK");
 
         Label label = new Label();
@@ -46,7 +46,7 @@ public class Message {
 
         button.setOnAction(event -> stage.close());
 
-        StyleHandler.applyStyle(scene);
+        styleHandler.applyStyle(scene);
 
         stage.showAndWait();
     }
