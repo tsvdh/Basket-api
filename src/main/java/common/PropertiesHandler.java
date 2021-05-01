@@ -3,7 +3,7 @@ package common;
 import app.Property;
 import java.util.Properties;
 
-abstract class PropertiesHandler {
+public abstract class PropertiesHandler {
 
     Properties properties;
 
