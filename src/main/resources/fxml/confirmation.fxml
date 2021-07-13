@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="common.pre_built.popups.ConfirmationController">
+   <children>
+      <VBox alignment="CENTER" layoutX="250.0" layoutY="94.0" prefHeight="400.0" prefWidth="600.0" spacing="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label fx:id="question" focusTraversable="false" text="Question">
+               <padding>
+                  <Insets left="40.0" right="40.0" />
+               </padding>
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" spacing="50.0">
+               <children>
+                  <Button focusTraversable="false" mnemonicParsing="false" onAction="#confirm" style="-fx-font-size: 18;" text="Yes">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+                  <Button focusTraversable="false" mnemonicParsing="false" onAction="#cancel" prefWidth="51.0" style="-fx-font-size: 18;" text="No">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

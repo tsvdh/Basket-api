@@ -3,8 +3,12 @@ package common.pre_built;
 import common.PathHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 public class StyleHandler {
 
@@ -39,7 +43,7 @@ public class StyleHandler {
             case INTERNAL -> {
                 String relativePath = location.pathGetter.apply(fileName);
                 try {
-                    path = StyleHandler.class.getResource(relativePath).toExternalForm();
+                    path = requireNonNull(StyleHandler.class.getResource(relativePath)).toExternalForm();
                 } catch (NullPointerException e) {
                     throw new RuntimeException(e); // TODO: add visual warning
                 }
@@ -51,5 +55,9 @@ public class StyleHandler {
         Parent root = scene.getRoot();
         root.setId("background");
         root.getStylesheets().add(path);
+    }
+
+    public void setIcon(Stage stage) {
+        stage.getIcons().add(new Image(PathHandler.getIconPath()));
     }
 }

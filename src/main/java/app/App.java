@@ -5,6 +5,33 @@ import common.InternalPropertiesHandler;
 import common.Version;
 import common.pre_built.StyleHandler;
 
+/**
+ * The main class of the Basket API.
+ * Use this class by implementing the start method, and then calling the run method.
+ * <p>
+ * <p>
+ * Some assumptions are made about the structure of your project:
+ * <ul>
+ *     <li>All resources files are in a directory tagged as a resources folder.</li>
+ *     <li>{@code .properties} files are in the {@code properties} folder.</li>
+ *     <ul>
+ *         <li>It must contain a file called {@code pom.properties}, which contains {@code name} and {@code version} keys.</li>
+ *     </ul>
+ *     <li>Images or other visual data are in the {@code images} folder.</li>
+ *     <ul><li>The main icon of your app is called {@code icon.png}</li></ul>
+ *     <li>Any style files ({@code .css}, {@code .ttf}) are in the {@code style} folder.</li>
+ * </ul>
+ * <p>
+ * <p>
+ * Three handler objects are made available through this class:
+ * <ul>
+ *     <li>{@code pomHandler}, handles the {@code .properties} file of the internal pom.</li>
+ *     <li>{@code settingsHandler}, handler the {@code .properties} file of the external settings file.</li>
+ *     <li>{@code styleHandler}, handles applying style to JavaFX scenes.</li>
+ * </ul>
+ * <p>
+ * Override the method {@code makeStyleHandler} if you wish to use another style.
+ */
 public abstract class App {
 
     public abstract void start();

@@ -5,7 +5,7 @@ import com.sun.jna.platform.win32.Shell32;
 import com.sun.jna.platform.win32.ShlObj;
 import com.sun.jna.platform.win32.WinDef;
 
-public class PathHandler {
+public class PathHandler { // TODO: allow for multiple installation possibilities
 
     public static final String LAUNCHER_NAME = "Basket";
 
@@ -55,7 +55,7 @@ public class PathHandler {
         return "style/" + fileName + ".css";
     }
 
-    public static String getExternalCSS(String fileName) { // TODO: allow for multiple installation possibilities
+    public static String getExternalCSS(String fileName) {
         return getUserHomePath() + "/resources/style/" + fileName + ".css";
     }
 }

@@ -2,51 +2,47 @@ package common.pre_built.popups;
 
 import common.PathHandler;
 import common.pre_built.StyleHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.Nullable;
 
-import static common.pre_built.ButtonFactory.makeSmallButton;
+import java.io.IOException;
+import java.net.URL;
 
 public class Message {
 
-    public Message(String text, boolean warning, StyleHandler styleHandler) {
-        Button button = makeSmallButton("OK");
+    public Message(String text, boolean warning, @Nullable StyleHandler styleHandler) {
+        URL url = getClass().getResource("/fxml/message.fxml");
+        FXMLLoader loader = new FXMLLoader(url);
 
-        Label label = new Label();
-        label.setFont(new Font(20));
-        label.setText(text);
-        if (warning) {
-            label.setStyle("-fx-text-fill: red");
+        Parent parent;
+        try {
+            parent = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().addAll(label, button);
-        vBox.setSpacing(20);
-        vBox.setPadding(new Insets(10));
-        vBox.setMinWidth(300);
-
-        Scene scene = new Scene(vBox);
-
         Stage stage = new Stage();
+
+        MessageController controller = loader.getController();
+        controller.init(stage, text, warning);
+
+        Scene scene = new Scene(parent);
         stage.setScene(scene);
-        stage.setTitle("Important message");
+        stage.setTitle("Message");
         stage.initModality(Modality.APPLICATION_MODAL);
+
         try {
             stage.getIcons().add(new Image(PathHandler.getIconPath()));
         } catch (Exception ignored) {}
 
-        button.setOnAction(event -> stage.close());
-
-        styleHandler.applyStyle(scene);
+        if (styleHandler != null) {
+            styleHandler.applyStyle(scene);
+        }
 
         stage.showAndWait();
     }
