@@ -1,5 +1,6 @@
 package common;
 
+import app.NotifyException;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -19,15 +20,15 @@ public class ExternalPropertiesHandler extends PropertiesHandler {
         try {
             FileHandler.makeFile(file);
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO: add visual warning
+            throw new NotifyException(e.getMessage());
         }
 
         // try to construct properties
         try {
             properties.load(new FileReader(file));
-        } catch (Exception e) {
+        } catch (IOException e) {
             if (fallback == null) {
-                throw new RuntimeException(e); // TODO: add visual warning
+                throw new NotifyException("Could not load file at: " + file.getPath());
             } else {
                 properties = fallback.properties;
                 return;
@@ -60,7 +61,7 @@ public class ExternalPropertiesHandler extends PropertiesHandler {
         try {
             properties.store(new FileWriter(this.file), null);
         } catch (Exception e) {
-            throw new RuntimeException(e); // TODO: add visual warning
+            throw new NotifyException("Could not store properties: " + e.getMessage());
         }
     }
 }

@@ -1,5 +1,6 @@
 package common.pre_built;
 
+import app.NotifyException;
 import common.PathHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -45,7 +46,7 @@ public class StyleHandler {
                 try {
                     path = requireNonNull(StyleHandler.class.getResource(relativePath)).toExternalForm();
                 } catch (NullPointerException e) {
-                    throw new RuntimeException(e); // TODO: add visual warning
+                    throw new NotifyException("Unable to get internal stylesheet at: " + relativePath);
                 }
             }
             case EXTERNAL -> path = location.pathGetter.apply(fileName);

@@ -4,6 +4,7 @@ import common.ExternalPropertiesHandler;
 import common.InternalPropertiesHandler;
 import common.Version;
 import common.pre_built.StyleHandler;
+import common.pre_built.popups.Message;
 
 /**
  * The main class of the Basket API.
@@ -14,11 +15,9 @@ import common.pre_built.StyleHandler;
  * <ul>
  *     <li>All resources files are in a directory tagged as a resources folder.</li>
  *     <li>{@code .properties} files are in the {@code properties} folder.</li>
- *     <ul>
- *         <li>It must contain a file called {@code pom.properties}, which contains {@code name} and {@code version} keys.</li>
- *     </ul>
+ *     <li>This folder must contain a file called {@code pom.properties}, which contains {@code name} and {@code version} keys.</li>
  *     <li>Images or other visual data are in the {@code images} folder.</li>
- *     <ul><li>The main icon of your app is called {@code icon.png}</li></ul>
+ *     <li>The main icon of your app is called {@code icon.png}</li>
  *     <li>Any style files ({@code .css}, {@code .ttf}) are in the {@code style} folder.</li>
  * </ul>
  * <p>
@@ -97,7 +96,11 @@ public abstract class App {
         app.settingsHandler = ExternalPropertiesHandler.newHandler("settings", app.getAppName(), fallbackSettings);
         app.styleHandler = app.makeStyleHandler();
 
-        app.start();
+        try {
+            app.start();
+        } catch (NotifyException e) {
+            new Message(e.getMessage(), true, null);
+        }
 
         // store settings in case app didn't do it
         app.settingsHandler.saveProperties();

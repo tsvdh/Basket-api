@@ -1,5 +1,6 @@
 package common;
 
+import app.NotifyException;
 import app.Property;
 
 import java.util.Properties;
@@ -10,9 +11,9 @@ public class InternalPropertiesHandler extends PropertiesHandler {
     public InternalPropertiesHandler(String path) {
         this.properties = new Properties();
         try {
-            properties.load(ClassLoader.getSystemResourceAsStream(path)); // TODO: add visual warning
+            properties.load(ClassLoader.getSystemResourceAsStream(path));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new NotifyException("Unable to load internal properties at: " + path);
         }
     }
 
