@@ -38,21 +38,16 @@ public class Confirmation {
         URL url = Confirmation.class.getResource("/fxml/confirmation.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
-        Parent parent;
+        Stage stage;
         try {
-            parent = loader.load();
+            stage = loader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        Stage stage = new Stage();
-
         ConfirmationController controller = loader.getController();
         controller.init(stage, question);
 
-        Scene scene = new Scene(parent);
-        stage.setScene(scene);
-        stage.setTitle("Confirmation");
         stage.initModality(Modality.APPLICATION_MODAL);
 
         try {
@@ -60,7 +55,7 @@ public class Confirmation {
         } catch (Exception ignored) {}
 
         if (styleHandler != null) {
-            styleHandler.applyStyle(scene);
+            styleHandler.applyStyle(stage.getScene());
         }
 
         stage.showAndWait();

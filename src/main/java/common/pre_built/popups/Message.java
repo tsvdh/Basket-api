@@ -19,21 +19,16 @@ public class Message {
         URL url = getClass().getResource("/fxml/message.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
-        Parent parent;
+        Stage stage;
         try {
-            parent = loader.load();
+            stage = loader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        Stage stage = new Stage();
-
         MessageController controller = loader.getController();
         controller.init(stage, text, warning);
 
-        Scene scene = new Scene(parent);
-        stage.setScene(scene);
-        stage.setTitle("Message");
         stage.initModality(Modality.APPLICATION_MODAL);
 
         try {
@@ -41,7 +36,7 @@ public class Message {
         } catch (Exception ignored) {}
 
         if (styleHandler != null) {
-            styleHandler.applyStyle(scene);
+            styleHandler.applyStyle(stage.getScene());
         }
 
         stage.showAndWait();
