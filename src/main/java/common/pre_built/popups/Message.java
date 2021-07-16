@@ -14,7 +14,7 @@ import java.net.URL;
 public class Message {
 
     public Message(String text, boolean warning, @Nullable StyleHandler styleHandler) {
-        URL url = getClass().getResource("/common/fxml/message.fxml");
+        URL url = getClass().getResource("/api_fxml/message.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
         Stage stage;

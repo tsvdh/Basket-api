@@ -33,7 +33,7 @@ public class Confirmation {
             return true;
         }
 
-        URL url = Confirmation.class.getResource("/common/fxml/confirmation.fxml");
+        URL url = Confirmation.class.getResource("/api_fxml/confirmation.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
         Stage stage;
