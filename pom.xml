@@ -6,7 +6,7 @@
 
     <groupId>com.github.tsvdh</groupId>
     <artifactId>basket-api</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.9</version>
     <packaging>jar</packaging>
 
     <name>Basket-api</name>
@@ -14,8 +14,8 @@
     <url>https://github.com/tsvdh/${project.name}</url>
 
     <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javafx.version>16</javafx.version>
     </properties>

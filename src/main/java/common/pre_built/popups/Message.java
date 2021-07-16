@@ -3,8 +3,6 @@ package common.pre_built.popups;
 import common.PathHandler;
 import common.pre_built.StyleHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -16,7 +14,7 @@ import java.net.URL;
 public class Message {
 
     public Message(String text, boolean warning, @Nullable StyleHandler styleHandler) {
-        URL url = getClass().getResource("/fxml/message.fxml");
+        URL url = getClass().getResource("/common/fxml/message.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
         Stage stage;

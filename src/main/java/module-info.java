@@ -1,7 +1,8 @@
-module Basket.api {
+module basket.api {
     requires com.sun.jna;
     requires com.sun.jna.platform;
     requires org.jetbrains.annotations;
+
     requires transitive javafx.controls;
     requires transitive javafx.fxml;
 

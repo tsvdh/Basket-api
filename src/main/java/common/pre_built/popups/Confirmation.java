@@ -3,8 +3,6 @@ package common.pre_built.popups;
 import common.PathHandler;
 import common.pre_built.StyleHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -35,7 +33,7 @@ public class Confirmation {
             return true;
         }
 
-        URL url = Confirmation.class.getResource("/fxml/confirmation.fxml");
+        URL url = Confirmation.class.getResource("/common/fxml/confirmation.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
         Stage stage;
