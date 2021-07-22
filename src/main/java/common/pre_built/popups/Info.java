@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class Info {
 
-    public Info(List<String> info, @Nullable StyleHandler styleHandler) {
+    public Info(List<String> infoList, @Nullable StyleHandler styleHandler) {
         URL url = getClass().getResource("/api_fxml/info.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
@@ -29,7 +29,7 @@ public class Info {
 
         InfoController controller = loader.getController();
 
-        for (String infoLine : info) {
+        for (String infoLine : infoList) {
             if (infoLine.equals("-")) {
                 controller.infoVBox.getChildren().add(new Separator(Orientation.HORIZONTAL));
             }
