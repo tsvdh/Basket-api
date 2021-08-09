@@ -11,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.net.URL;
 
+import static common.pre_built.StyleHandler.setIcon;
+
 
 public class Confirmation {
 
@@ -48,9 +50,7 @@ public class Confirmation {
 
         stage.initModality(Modality.APPLICATION_MODAL);
 
-        try {
-            stage.getIcons().add(new Image(PathHandler.getIconPath()));
-        } catch (Exception ignored) {}
+        setIcon(stage);
 
         if (styleHandler != null) {
             styleHandler.applyStyle(stage.getScene());

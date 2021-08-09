@@ -14,6 +14,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.Nullable;
 
+import static common.pre_built.StyleHandler.setIcon;
+
 public class Info {
 
     public Info(List<String> infoList, @Nullable StyleHandler styleHandler) {
@@ -42,9 +44,7 @@ public class Info {
             }
         }
 
-        try {
-            stage.getIcons().add(new Image(PathHandler.getIconPath()));
-        } catch (Exception ignored) {}
+        setIcon(stage);
 
         if (styleHandler != null) {
             styleHandler.applyStyle(stage.getScene());

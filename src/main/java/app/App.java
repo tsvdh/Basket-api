@@ -19,6 +19,7 @@ import common.pre_built.popups.Message;
  *     <li>Images or other visual data are in the {@code images} folder.</li>
  *     <li>The main icon of your app is called {@code icon.png}</li>
  *     <li>Any style files ({@code .css}, {@code .ttf}) are in the {@code style} folder.</li>
+ *     <li>Your resource folders are opened to the api module {@code (basket.api)}</li>
  * </ul>
  * <p>
  * <p>
@@ -35,9 +36,14 @@ public abstract class App {
 
     public abstract void start();
 
+    private static Class<?> implementingClass; // for loading from the correct module
     private InternalPropertiesHandler pomHandler;
     private ExternalPropertiesHandler settingsHandler;
     private StyleHandler styleHandler;
+
+    public static Class<?> getImplementingClass() {
+        return implementingClass;
+    }
 
     public InternalPropertiesHandler getPomHandler() {
         return pomHandler;
@@ -58,8 +64,8 @@ public abstract class App {
         return new StyleHandler("clean", StyleHandler.Location.EXTERNAL);
     }
 
-    public static void run() {
-        // determine calling class
+    private static Class<?> getCallingClass() {
+        // determine current method
         String callingClassName = null;
         StackTraceElement[] stack = Thread.currentThread().getStackTrace();
         for (int i = 0; i < stack.length; i++) {
@@ -67,9 +73,10 @@ public abstract class App {
 
             String className = stackTraceElement.getClassName();
             String methodName = stackTraceElement.getMethodName();
-            // if at current method, go down one more for calling class
-            if (className.equals(App.class.getName()) && methodName.equals("run")) {
-                callingClassName = stack[i + 1].getClassName();
+            // if at current method, go down two more:
+            //      one to the caller of this method, one more to the caller of the inquiring method
+            if (className.equals(App.class.getName()) && methodName.equals("getCallingClass")) {
+                callingClassName = stack[i + 2].getClassName();
                 break;
             }
         }
@@ -78,9 +85,18 @@ public abstract class App {
             throw new RuntimeException("Couldn't find calling class");
         }
 
+        try {
+            return Class.forName(callingClassName);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void run() {
+        Class<?> callingClass = getCallingClass();
+
         App app;
         try {
-            Class<?> callingClass = Class.forName(callingClassName);
             if (callingClass.getSuperclass() == App.class) {
                 app = (App) callingClass.getConstructor().newInstance();
             }
@@ -91,6 +107,7 @@ public abstract class App {
             throw new RuntimeException(e.getMessage());
         }
 
+        implementingClass = callingClass;
         app.pomHandler = InternalPropertiesHandler.newHandler("pom");
         InternalPropertiesHandler fallbackSettings = InternalPropertiesHandler.newHandler("settings");
         app.settingsHandler = ExternalPropertiesHandler.newHandler("settings", app.getAppName(), fallbackSettings);

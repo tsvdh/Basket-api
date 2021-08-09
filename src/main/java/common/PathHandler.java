@@ -10,7 +10,7 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
     public static final String LAUNCHER_NAME = "Basket";
 
     static String getInternalPropertiesPath(String fileName) {
-        return "properties/" + fileName + ".properties";
+        return "/properties/" + fileName + ".properties";
     }
 
     static String getExternalPropertiesPath(String fileName, String appName) {
@@ -44,7 +44,7 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
     }
 
     public static String getInternalImagePath(String fileName) {
-        return "images/" + fileName;
+        return "/images/" + fileName;
     }
 
     public static String getIconPath() {
@@ -52,7 +52,7 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
     }
 
     public static String getInternalCSS(String fileName) {
-        return "style/" + fileName + ".css";
+        return "/style/" + fileName + ".css";
     }
 
     public static String getExternalCSS(String fileName) {

@@ -2,6 +2,9 @@ package common.pre_built;
 
 import app.NotifyException;
 import common.PathHandler;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -9,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.util.function.Function;
 
+import static app.App.getImplementingClass;
 import static java.util.Objects.requireNonNull;
 
 public class StyleHandler {
@@ -44,7 +48,7 @@ public class StyleHandler {
             case INTERNAL -> {
                 String relativePath = location.pathGetter.apply(fileName);
                 try {
-                    path = requireNonNull(StyleHandler.class.getResource(relativePath)).toExternalForm();
+                    path = requireNonNull(getImplementingClass().getResource(relativePath)).toExternalForm();
                 } catch (NullPointerException e) {
                     throw new NotifyException("Unable to get internal stylesheet at: " + relativePath);
                 }
@@ -58,7 +62,11 @@ public class StyleHandler {
         root.getStylesheets().add(path);
     }
 
-    public void setIcon(Stage stage) {
-        stage.getIcons().add(new Image(PathHandler.getIconPath()));
+    public static void setIcon(Stage stage) {
+        try {
+            String path = PathHandler.getIconPath();
+            InputStream iconStream = requireNonNull(getImplementingClass().getResourceAsStream(path));
+            stage.getIcons().add(new Image(iconStream));
+        } catch (Exception ignored) {}
     }
 }
