@@ -31,15 +31,42 @@ import common.pre_built.popups.Message;
  * </ul>
  * <p>
  * Override the method {@code makeStyleHandler} if you wish to use another style.
+ * <p>
+ * <p>
+ * Use this pattern if you are using JavaFX, in order to reduce the number of launching classes.
+ * <pre>
+ * public class Main extends Application {
+ *
+ *     public static class MyApp extends BasketApp {
+ *
+ *        {@code @Override}
+ *         public void start() {
+ *             // starting point for program
+ *         }
+ *
+ *         public static void invokeLaunch() {
+ *             MyApp.launch();
+ *         }
+ *     }
+ *
+ *    {@code @Override}
+ *     public void start(Stage primaryStage) {
+ *         MyApp.invokeLaunch();
+ *     }
+ *
+ *     public static void main(String[] args) {
+ *         Application.launch();
+ *     }
+ * }
+ * </pre>
  */
-public abstract class App {
+public abstract class BasketApp {
 
     public abstract void start();
 
     private static Class<?> implementingClass; // for loading from the correct module
     private InternalPropertiesHandler pomHandler;
     private ExternalPropertiesHandler settingsHandler;
-    private StyleHandler styleHandler;
 
     public static Class<?> getImplementingClass() {
         return implementingClass;
@@ -53,12 +80,8 @@ public abstract class App {
         return settingsHandler;
     }
 
-    public StyleHandler getStyleHandler() {
-        return styleHandler;
-    }
-
     /**
-     * Override this method if you want to use another style sheet.
+     * Override this method if you want to change the default style sheet.
      */
     public StyleHandler makeStyleHandler() {
         return new StyleHandler("clean", StyleHandler.Location.EXTERNAL);
@@ -75,7 +98,7 @@ public abstract class App {
             String methodName = stackTraceElement.getMethodName();
             // if at current method, go down two more:
             //      one to the caller of this method, one more to the caller of the inquiring method
-            if (className.equals(App.class.getName()) && methodName.equals("getCallingClass")) {
+            if (className.equals(BasketApp.class.getName()) && methodName.equals("getCallingClass")) {
                 callingClassName = stack[i + 2].getClassName();
                 break;
             }
@@ -92,31 +115,42 @@ public abstract class App {
         }
     }
 
-    public static void run() {
+    public static void launch() {
         Class<?> callingClass = getCallingClass();
 
-        App app;
+        BasketApp app;
         try {
-            if (callingClass.getSuperclass() == App.class) {
-                app = (App) callingClass.getConstructor().newInstance();
+            if (callingClass.getSuperclass() == BasketApp.class) {
+                app = (BasketApp) callingClass.getConstructor().newInstance();
             }
             else {
-                throw new IllegalStateException(callingClass.getName() + " must extend " + App.class.getName());
+                throw new IllegalStateException(callingClass.getName() + " must extend " + BasketApp.class.getName());
             }
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
 
         implementingClass = callingClass;
+
         app.pomHandler = InternalPropertiesHandler.newHandler("pom");
-        InternalPropertiesHandler fallbackSettings = InternalPropertiesHandler.newHandler("settings");
+
+        InternalPropertiesHandler fallbackSettings;
+        try {
+            fallbackSettings = InternalPropertiesHandler.newHandler("settings");
+        } catch (NotifyException e) {
+            fallbackSettings = null;
+        }
         app.settingsHandler = ExternalPropertiesHandler.newHandler("settings", app.getAppName(), fallbackSettings);
-        app.styleHandler = app.makeStyleHandler();
+
+        app.makeStyleHandler().applyStyleToApplication();
 
         try {
             app.start();
         } catch (NotifyException e) {
-            new Message(e.getMessage(), true, null);
+            // display a message if the current thread is a JavaFX thread
+            try {
+                new Message(e.getMessage(), true);
+            } catch (Exception ignored) {}
         }
 
         // store settings in case app didn't do it

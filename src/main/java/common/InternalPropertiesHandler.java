@@ -5,7 +5,7 @@ import app.Property;
 
 import java.util.Properties;
 
-import static app.App.getImplementingClass;
+import static app.BasketApp.getImplementingClass;
 
 
 public class InternalPropertiesHandler extends PropertiesHandler {

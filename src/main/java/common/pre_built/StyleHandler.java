@@ -2,17 +2,15 @@ package common.pre_built;
 
 import app.NotifyException;
 import common.PathHandler;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import javafx.scene.Parent;
+import java.util.function.Function;
+import javafx.collections.ListChangeListener;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
-import java.util.function.Function;
-
-import static app.App.getImplementingClass;
+import static app.BasketApp.getImplementingClass;
 import static java.util.Objects.requireNonNull;
 
 public class StyleHandler {
@@ -37,29 +35,45 @@ public class StyleHandler {
         this.location = location;
     }
 
-    public void applyStyle(Scene scene) {
-        applyStyle(scene, fileName, location);
-    }
-
-    public static void applyStyle(Scene scene, String fileName, Location location) {
-        String path;
-
+    public String getStyleSheetPath() {
         switch (location) {
             case INTERNAL -> {
                 String relativePath = location.pathGetter.apply(fileName);
                 try {
-                    path = requireNonNull(getImplementingClass().getResource(relativePath)).toExternalForm();
+                    return requireNonNull(getImplementingClass().getResource(relativePath)).toExternalForm();
                 } catch (NullPointerException e) {
                     throw new NotifyException("Unable to get internal stylesheet at: " + relativePath);
                 }
             }
-            case EXTERNAL -> path = location.pathGetter.apply(fileName);
+            case EXTERNAL -> {
+                return "file:/" + location.pathGetter.apply(fileName);
+            }
             default -> throw new RuntimeException("This should never be thrown");
         }
+    }
 
-        Parent root = scene.getRoot();
-        root.setId("background");
-        root.getStylesheets().add(path);
+    public void applyStyleToApplication() {
+        String path = this.getStyleSheetPath();
+        Window.getWindows().addListener((ListChangeListener<? super Window>) event -> {
+            event.next();
+            for (Window window : event.getAddedSubList()) {
+
+                Stage stage;
+                try {
+                    stage = (Stage) window;
+                } catch (ClassCastException e) {
+                    continue;
+                }
+
+                stage.getScene().getRoot().getStylesheets().add(path);
+                setIcon(stage);
+            }
+        });
+    }
+
+    public void applyStyleToScene(Scene scene) {
+        String path = this.getStyleSheetPath();
+        scene.getRoot().getStylesheets().add(path);
     }
 
     public static void setIcon(Stage stage) {

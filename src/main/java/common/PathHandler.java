@@ -14,13 +14,20 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
     }
 
     static String getExternalPropertiesPath(String fileName, String appName) {
-        return getAppdataPath(appName) + "/" + fileName + ".properties";
+        String folderPath;
+        if (appName.equals("Basket")) {
+            folderPath = getBasketHomePath() + "/resources/private";
+        } else {
+            folderPath = getAppdataPath(appName);
+        }
+        return folderPath + "/" + fileName + ".properties";
     }
 
     private static String getPath(int location) {
         char[] pszPath = new char[WinDef.MAX_PATH];
         Shell32.INSTANCE.SHGetFolderPath(null, location, null, ShlObj.SHGFP_TYPE_CURRENT, pszPath);
-        return Native.toString(pszPath);
+        String path = Native.toString(pszPath);
+        return path.replace('\\', '/');
     }
 
     public static String getAppdataPath(String appName) {
@@ -31,8 +38,9 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
         return getPath(ShlObj.CSIDL_PROGRAM_FILES) + "/" + LAUNCHER_NAME;
     }
 
-    public static String getUserHomePath() {
-        return System.getenv("user.home") + "/" + LAUNCHER_NAME;
+    public static String getBasketHomePath() {
+        String userHome = System.getProperty("user.home").replace('\\', '/');
+        return userHome + "/" + LAUNCHER_NAME;
     }
 
     public static String getDesktopPath() {
@@ -56,6 +64,6 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
     }
 
     public static String getExternalCSS(String fileName) {
-        return getUserHomePath() + "/resources/style/" + fileName + ".css";
+        return getBasketHomePath() + "/resources/public/style/" + fileName + ".css";
     }
 }

@@ -1,21 +1,14 @@
 package common.pre_built.popups;
 
-import common.PathHandler;
-import common.pre_built.StyleHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.image.Image;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 import java.net.URL;
-
-import static common.pre_built.StyleHandler.setIcon;
+import javafx.fxml.FXMLLoader;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class Message {
 
-    public Message(String text, boolean warning, @Nullable StyleHandler styleHandler) {
+    public Message(String text, boolean warning) {
         URL url = getClass().getResource("/api_fxml/message.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
@@ -30,12 +23,6 @@ public class Message {
         controller.init(stage, text, warning);
 
         stage.initModality(Modality.APPLICATION_MODAL);
-
-        setIcon(stage);
-
-        if (styleHandler != null) {
-            styleHandler.applyStyle(stage.getScene());
-        }
 
         stage.showAndWait();
     }
