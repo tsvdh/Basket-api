@@ -22,5 +22,11 @@
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:win:16" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-web:16" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-web:win:16" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-media:16" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-media:win:16" level="project" />
+    <orderEntry type="library" name="Maven: org.jfxtras:jmetro:11.6.15" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.controlsfx:controlsfx:11.0.0" level="project" />
   </component>
 </module>

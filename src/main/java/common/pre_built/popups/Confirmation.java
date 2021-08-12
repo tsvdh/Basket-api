@@ -6,12 +6,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import static common.pre_built.StyleHandler.setIcon;
-
 
 public class Confirmation {
 
     private final static String QUESTION = "Do you want to perform the action?";
+
+    // This class should not be instantiated
+    private Confirmation() {}
 
     public static boolean getConfirmation() {
         return getConfirmation(QUESTION);

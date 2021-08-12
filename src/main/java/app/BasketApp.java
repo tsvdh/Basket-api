@@ -84,7 +84,7 @@ public abstract class BasketApp {
      * Override this method if you want to change the default style sheet.
      */
     public StyleHandler makeStyleHandler() {
-        return new StyleHandler("clean", StyleHandler.Location.EXTERNAL);
+        return StyleHandler.with(StyleHandler.PreBuiltStyle.JMETRO);
     }
 
     private static Class<?> getCallingClass() {
