@@ -9,6 +9,6 @@ module basket.api {
 
     exports app;
     exports common;
-    exports common.pre_built;
-    exports common.pre_built.popups;
+    exports prebuilt;
+    exports util;
 }

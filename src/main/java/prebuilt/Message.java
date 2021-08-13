@@ -1,4 +1,4 @@
-package common.pre_built.popups;
+package prebuilt;
 
 import java.io.IOException;
 import java.net.URL;

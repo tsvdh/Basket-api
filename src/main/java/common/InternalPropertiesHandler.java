@@ -1,8 +1,7 @@
 package common;
 
-import app.NotifyException;
 import app.Property;
-
+import java.io.IOException;
 import java.util.Properties;
 
 import static app.BasketApp.getImplementingClass;
@@ -11,16 +10,12 @@ import static app.BasketApp.getImplementingClass;
 public class InternalPropertiesHandler extends PropertiesHandler {
 
     // root of the path must be the resources folder
-    public InternalPropertiesHandler(String path) {
+    public InternalPropertiesHandler(String path) throws IOException {
         this.properties = new Properties();
-        try {
-            properties.load(getImplementingClass().getResourceAsStream(path));
-        } catch (Exception e) {
-            throw new NotifyException("Unable to load internal properties at: " + path);
-        }
+        properties.load(getImplementingClass().getResourceAsStream(path));
     }
 
-    public static InternalPropertiesHandler newHandler(String fileName) {
+    public static InternalPropertiesHandler newHandler(String fileName) throws IOException {
         String path = PathHandler.getInternalPropertiesPath(fileName);
         return new InternalPropertiesHandler(path);
     }

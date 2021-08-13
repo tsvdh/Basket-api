@@ -1,34 +1,31 @@
 package common;
 
-import app.NotifyException;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import org.jetbrains.annotations.Nullable;
 
 public class ExternalPropertiesHandler extends PropertiesHandler {
 
     private final File file;
 
     //absolute path required
-    public ExternalPropertiesHandler(String path, @Nullable PropertiesHandler fallback) {
+    public ExternalPropertiesHandler(String path, @Nullable PropertiesHandler fallback) throws IOException {
         this.properties = new Properties();
         this.file = new File(path);
 
-        try {
-            FileHandler.makeFile(file);
-        } catch (IOException e) {
-            throw new NotifyException(e.getMessage());
-        }
+        FileHandler.makeFile(file);
 
         // try to construct properties
         try {
             properties.load(new FileReader(file));
         } catch (IOException e) {
             if (fallback == null) {
-                throw new NotifyException("Could not load file at: " + file.getPath());
+                throw e;
             } else {
                 properties = fallback.properties;
                 return;
@@ -52,16 +49,12 @@ public class ExternalPropertiesHandler extends PropertiesHandler {
     }
 
     public static ExternalPropertiesHandler newHandler(String fileName, String appName,
-                                                       @Nullable PropertiesHandler fallbackProperties) {
+                                                       @Nullable PropertiesHandler fallbackProperties) throws IOException {
         String path = PathHandler.getExternalPropertiesPath(fileName, appName);
         return new ExternalPropertiesHandler(path, fallbackProperties);
     }
 
-    public void saveProperties() {
-        try {
-            properties.store(new FileWriter(this.file), null);
-        } catch (Exception e) {
-            throw new NotifyException("Could not store properties: " + e.getMessage());
-        }
+    public void saveProperties() throws IOException {
+        properties.store(new FileWriter(this.file), null);
     }
 }

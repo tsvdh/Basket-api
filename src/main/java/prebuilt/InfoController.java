@@ -1,4 +1,4 @@
-package common.pre_built.popups;
+package prebuilt;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;

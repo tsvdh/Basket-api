@@ -7,6 +7,9 @@ import com.sun.jna.platform.win32.WinDef;
 
 public class PathHandler { // TODO: allow for multiple installation possibilities
 
+    // This class should not be instantiated
+    private PathHandler() {}
+
     public static final String LAUNCHER_NAME = "Basket";
 
     static String getInternalPropertiesPath(String fileName) {

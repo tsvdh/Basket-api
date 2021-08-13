@@ -1,10 +1,11 @@
 package app;
 
 import common.ExternalPropertiesHandler;
+import common.FatalError;
 import common.InternalPropertiesHandler;
-import common.Version;
-import common.pre_built.StyleHandler;
-import common.pre_built.popups.Message;
+import common.StyleHandler;
+import java.io.IOException;
+import util.Version;
 
 /**
  * The main class of the Basket API.
@@ -62,23 +63,28 @@ import common.pre_built.popups.Message;
  */
 public abstract class BasketApp {
 
-    public abstract void start();
-
     private static Class<?> implementingClass; // for loading from the correct module
-    private InternalPropertiesHandler pomHandler;
-    private ExternalPropertiesHandler settingsHandler;
+    private static InternalPropertiesHandler pomHandler;
+    private static ExternalPropertiesHandler settingsHandler;
+    private static StyleHandler styleHandler;
 
     public static Class<?> getImplementingClass() {
         return implementingClass;
     }
 
-    public InternalPropertiesHandler getPomHandler() {
+    public static InternalPropertiesHandler getPomHandler() {
         return pomHandler;
     }
 
-    public ExternalPropertiesHandler getSettingsHandler() {
+    public static ExternalPropertiesHandler getSettingsHandler() {
         return settingsHandler;
     }
+
+    public static StyleHandler getStyleHandler() {
+        return styleHandler;
+    }
+
+    public abstract void start();
 
     /**
      * Override this method if you want to change the default style sheet.
@@ -132,37 +138,42 @@ public abstract class BasketApp {
 
         implementingClass = callingClass;
 
-        app.pomHandler = InternalPropertiesHandler.newHandler("pom");
-
-        InternalPropertiesHandler fallbackSettings;
         try {
-            fallbackSettings = InternalPropertiesHandler.newHandler("settings");
-        } catch (NotifyException e) {
-            fallbackSettings = null;
-        }
-        app.settingsHandler = ExternalPropertiesHandler.newHandler("settings", app.getAppName(), fallbackSettings);
+            pomHandler = InternalPropertiesHandler.newHandler("pom");
 
-        app.makeStyleHandler().applyStyleToApplication();
-
-        try {
-            app.start();
-        } catch (NotifyException e) {
-            // display a message if the current thread is a JavaFX thread
+            InternalPropertiesHandler fallbackSettings;
             try {
-                new Message(e.getMessage(), true);
-            } catch (Exception ignored) {}
+                fallbackSettings = InternalPropertiesHandler.newHandler("settings");
+            } catch (IOException e) {
+                fallbackSettings = null;
+            }
+            settingsHandler = ExternalPropertiesHandler.newHandler("settings", getAppName(), fallbackSettings);
+        }
+        catch (IOException e) {
+            throw new FatalError(e);
         }
 
-        // store settings in case app didn't do it
-        app.settingsHandler.saveProperties();
+        styleHandler = app.makeStyleHandler();
+        styleHandler.applyStyleToApplication();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // store settings in case app didn't do it
+            if (settingsHandler != null) {
+                try {
+                    settingsHandler.saveProperties();
+                } catch (IOException ignored) {} // don't display error as shutdown shouldn't be delayed
+            }
+        }));
+
+        app.start();
     }
 
-    public String getAppName() {
-        return this.pomHandler.getProperties().getProperty("name");
+    public static String getAppName() {
+        return pomHandler.getProperties().getProperty("name");
     }
 
-    public Version getAppVersion() {
-        String version = this.pomHandler.getProperties().getProperty("version");
+    public static Version getAppVersion() {
+        String version = pomHandler.getProperties().getProperty("version");
         return new Version(version);
     }
 }

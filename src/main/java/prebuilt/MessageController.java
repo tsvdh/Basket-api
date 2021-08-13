@@ -1,4 +1,4 @@
-package common.pre_built.popups;
+package prebuilt;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

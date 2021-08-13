@@ -8,6 +8,9 @@ import java.nio.file.Path;
 
 public class FileHandler {
 
+    // This class should not be instantiated
+    private FileHandler() {}
+
     public static void makeFile(File file) throws IOException { // TODO: test relative path creation
         makeFile(file.toPath());
     }
