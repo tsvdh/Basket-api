@@ -11,4 +11,5 @@ module basket.api {
     exports common;
     exports prebuilt;
     exports util;
+    exports util.url;
 }

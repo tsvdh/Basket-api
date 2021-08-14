@@ -22,6 +22,10 @@ public class Version implements Comparable<Version> {
         }
     }
 
+    public static Version of(String version) {
+        return new Version(version);
+    }
+
     @Override
     public String toString() {
         return raw;

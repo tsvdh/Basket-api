@@ -141,7 +141,7 @@ public abstract class BasketApp {
         try {
             pomHandler = InternalPropertiesHandler.newHandler("pom");
 
-            InternalPropertiesHandler fallbackSettings;
+            InternalPropertiesHandler fallbackSettings; // TODO: implement try with resource pattern
             try {
                 fallbackSettings = InternalPropertiesHandler.newHandler("settings");
             } catch (IOException e) {
