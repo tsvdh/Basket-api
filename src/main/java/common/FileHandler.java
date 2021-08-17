@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 
 public class FileHandler {
 
@@ -25,5 +26,20 @@ public class FileHandler {
         try {
             Files.createFile(path);
         } catch (FileAlreadyExistsException ignored) {}
+    }
+
+    public static void deletePathAndContent(File file) throws IOException {
+        deletePathAndContent(file.toPath());
+    }
+
+    public static void deletePathAndContent(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            return;
+        }
+        //noinspection ResultOfMethodCallIgnored
+        Files.walk(path)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 }
