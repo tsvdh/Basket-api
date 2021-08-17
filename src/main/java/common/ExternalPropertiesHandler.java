@@ -1,5 +1,6 @@
 package common;
 
+import app.Property;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,8 +22,8 @@ public class ExternalPropertiesHandler extends PropertiesHandler {
         FileHandler.makeFile(file);
 
         // try to construct properties
-        try {
-            properties.load(new FileReader(file));
+        try (FileReader reader = new FileReader(file)) {
+            properties.load(reader);
         } catch (IOException e) {
             if (fallback == null) {
                 throw e;
@@ -48,13 +49,21 @@ public class ExternalPropertiesHandler extends PropertiesHandler {
         }
     }
 
-    public static ExternalPropertiesHandler newHandler(String fileName, String appName,
+    public static ExternalPropertiesHandler newHandler(String fileName,
                                                        @Nullable PropertiesHandler fallbackProperties) throws IOException {
-        String path = PathHandler.getExternalPropertiesPath(fileName, appName);
+        String path = PathHandler.getExternalPropertiesPath(fileName);
         return new ExternalPropertiesHandler(path, fallbackProperties);
     }
 
-    public void saveProperties() throws IOException {
-        properties.store(new FileWriter(this.file), null);
+    @Override
+    public ExternalPropertiesHandler setProperty(Property property, Object value) {
+        super.setProperty(property, value);
+        return this;
+    }
+
+    public void save() throws IOException {
+        try (FileWriter writer = new FileWriter(this.file)) {
+            properties.store(writer, null);
+        }
     }
 }

@@ -9,7 +9,7 @@ public class Version implements Comparable<Version> {
     private final String raw;
     private final int[] array;
 
-    public Version(String version) {
+    public Version(String version) throws IllegalArgumentException {
         raw = version;
         String[] strings = version.split("\\.");
         if (strings.length != LENGTH) {
@@ -22,7 +22,7 @@ public class Version implements Comparable<Version> {
         }
     }
 
-    public static Version of(String version) {
+    public static Version of(String version) throws IllegalArgumentException {
         return new Version(version);
     }
 

@@ -16,7 +16,8 @@ public abstract class PropertiesHandler {
         return property.getParser().apply(value);
     }
 
-    public void setProperty(Property property, Object value) {
+    public PropertiesHandler setProperty(Property property, Object value) {
         properties.setProperty(property.toString(), String.valueOf(value));
+        return this;
     }
 }

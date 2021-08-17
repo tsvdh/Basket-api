@@ -1,5 +1,6 @@
 package common;
 
+import app.BasketApp;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Shell32;
 import com.sun.jna.platform.win32.ShlObj;
@@ -12,16 +13,17 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
 
     public static final String LAUNCHER_NAME = "Basket";
 
-    static String getInternalPropertiesPath(String fileName) {
+    public static String getInternalPropertiesPath(String fileName) {
         return "/properties/" + fileName + ".properties";
     }
 
-    static String getExternalPropertiesPath(String fileName, String appName) {
+    public static String getExternalPropertiesPath(String fileName) {
+        String appName = BasketApp.getAppName();
         String folderPath;
         if (appName.equals("Basket")) {
             folderPath = getBasketHomePath() + "/resources/private";
         } else {
-            folderPath = getAppdataPath(appName);
+            folderPath = getAppFolderPath(appName);
         }
         return folderPath + "/" + fileName + ".properties";
     }
@@ -33,7 +35,7 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
         return path.replace('\\', '/');
     }
 
-    public static String getAppdataPath(String appName) {
+    public static String getAppFolderPath(String appName) {
         return getPath(ShlObj.CSIDL_APPDATA) + "/" + LAUNCHER_NAME + "/" + appName;
     }
 
@@ -41,9 +43,14 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
         return getPath(ShlObj.CSIDL_PROGRAM_FILES) + "/" + LAUNCHER_NAME;
     }
 
-    public static String getBasketHomePath() {
+    private static String getBasketHomePath() {
         String userHome = System.getProperty("user.home").replace('\\', '/');
         return userHome + "/" + LAUNCHER_NAME;
+    }
+
+    public static String getAppHomePath(String appName) {
+        String basketHome = getBasketHomePath();
+        return basketHome + "/library/" + appName;
     }
 
     public static String getDesktopPath() {

@@ -143,9 +143,11 @@ public class StyleHandler {
     }
 
     public static void setIcon(Stage stage) {
-        try {
-            String path = PathHandler.getIconPath();
-            InputStream iconStream = requireNonNull(getImplementingClass().getResourceAsStream(path));
+        String path = PathHandler.getIconPath();
+
+        try (InputStream in = getImplementingClass().getResourceAsStream(path)) {
+            InputStream iconStream = requireNonNull(in);
+
             stage.getIcons().clear();
             stage.getIcons().add(new Image(iconStream));
         } catch (Exception ignored) {}

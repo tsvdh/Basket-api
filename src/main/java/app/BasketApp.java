@@ -147,7 +147,7 @@ public abstract class BasketApp {
             } catch (IOException e) {
                 fallbackSettings = null;
             }
-            settingsHandler = ExternalPropertiesHandler.newHandler("settings", getAppName(), fallbackSettings);
+            settingsHandler = ExternalPropertiesHandler.newHandler("settings", fallbackSettings);
         }
         catch (IOException e) {
             throw new FatalError(e);
@@ -160,7 +160,7 @@ public abstract class BasketApp {
             // store settings in case app didn't do it
             if (settingsHandler != null) {
                 try {
-                    settingsHandler.saveProperties();
+                    settingsHandler.save();
                 } catch (IOException ignored) {} // don't display error as shutdown shouldn't be delayed
             }
         }));
