@@ -1,6 +1,8 @@
 package common;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Function;
 import javafx.collections.ListChangeListener;
@@ -13,6 +15,7 @@ import jfxtras.styles.jmetro.JMetroStyleClass;
 import jfxtras.styles.jmetro.Style;
 import org.jetbrains.annotations.Nullable;
 import prebuilt.Message;
+import util.Util;
 
 import static app.BasketApp.getImplementingClass;
 import static java.util.Objects.requireNonNull;
@@ -24,11 +27,11 @@ public class StyleHandler {
         INTERNAL(PathHandler::getInternalCSS),
         EXTERNAL(PathHandler::getExternalCSS);
 
-        Location(Function<String, String> pathGetter) {
+        Location(Function<String, Path> pathGetter) {
             this.pathGetter = pathGetter;
         }
 
-        private final Function<String, String> pathGetter;
+        private final Function<String, Path> pathGetter;
     }
 
     public enum PreBuiltStyle {
@@ -79,9 +82,9 @@ public class StyleHandler {
         String path;
         switch (location) {
             case INTERNAL -> {
-                String relativePath = location.pathGetter.apply(fileName);
+                Path relativePath = location.pathGetter.apply(fileName);
                 try {
-                    path = requireNonNull(getImplementingClass().getResource(relativePath)).toExternalForm();
+                    path = requireNonNull(getImplementingClass().getResource(Util.pathToJavaPath(relativePath))).toExternalForm();
                 } catch (NullPointerException e) {
                     try {
                         new Message("Unable to get internal stylesheet at: " + relativePath, true);
@@ -143,13 +146,20 @@ public class StyleHandler {
     }
 
     public static void setIcon(Stage stage) {
-        String path = PathHandler.getIconPath();
+        Path path = PathHandler.getIconPath();
 
-        try (InputStream in = getImplementingClass().getResourceAsStream(path)) {
+        try (InputStream in = getImplementingClass().getResourceAsStream(Util.pathToJavaPath(path))) {
             InputStream iconStream = requireNonNull(in);
 
             stage.getIcons().clear();
             stage.getIcons().add(new Image(iconStream));
-        } catch (Exception ignored) {}
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (NullPointerException e) {
+            System.err.println("Could not find app icon");
+            e.printStackTrace();
+        }
     }
 }

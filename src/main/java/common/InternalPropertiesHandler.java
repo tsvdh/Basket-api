@@ -3,7 +3,9 @@ package common;
 import app.Property;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Properties;
+import util.Util;
 
 import static app.BasketApp.getImplementingClass;
 
@@ -11,15 +13,17 @@ import static app.BasketApp.getImplementingClass;
 public class InternalPropertiesHandler extends PropertiesHandler {
 
     // root of the path must be the resources folder
-    public InternalPropertiesHandler(String path) throws IOException {
+    public InternalPropertiesHandler(Path path) throws IOException {
         this.properties = new Properties();
-        try (InputStream in = getImplementingClass().getResourceAsStream(path)) {
+        try (InputStream in = getImplementingClass().getResourceAsStream(Util.pathToJavaPath(path))) {
             properties.load(in);
+        } catch (NullPointerException e) {
+            throw new IOException(e);
         }
     }
 
     public static InternalPropertiesHandler newHandler(String fileName) throws IOException {
-        String path = PathHandler.getInternalPropertiesPath(fileName);
+        Path path = PathHandler.getInternalPropertiesPath(fileName);
         return new InternalPropertiesHandler(path);
     }
 

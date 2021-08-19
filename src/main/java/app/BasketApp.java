@@ -15,12 +15,13 @@ import util.Version;
  * Some assumptions are made about the structure of your project:
  * <ul>
  *     <li>All resources files are in a directory tagged as a resources folder.</li>
+ *     <li>Your resource folders are opened to the api module {@code (basket.api)} in the {@code module-info.java} file.</li>
  *     <li>{@code .properties} files are in the {@code properties} folder.</li>
- *     <li>This folder must contain a file called {@code pom.properties}, which contains {@code name} and {@code version} keys.</li>
+ *     <li>This folder must contain a file called {@code pom.properties}, which contains {@code name} and {@code version} keys.
+ *     The values of these keys can be retrieved from the pom with the {@code ${} } construct.</li>
  *     <li>Images or other visual data are in the {@code images} folder.</li>
  *     <li>The main icon of your app is called {@code icon.png}</li>
  *     <li>Any style files ({@code .css}, {@code .ttf}) are in the {@code style} folder.</li>
- *     <li>Your resource folders are opened to the api module {@code (basket.api)}</li>
  * </ul>
  * <p>
  * <p>

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -15,9 +16,9 @@ public class ExternalPropertiesHandler extends PropertiesHandler {
     private final File file;
 
     //absolute path required
-    public ExternalPropertiesHandler(String path, @Nullable PropertiesHandler fallback) throws IOException {
+    public ExternalPropertiesHandler(Path path, @Nullable PropertiesHandler fallback) throws IOException {
         this.properties = new Properties();
-        this.file = new File(path);
+        this.file = path.toFile();
 
         FileHandler.makeFile(file);
 
@@ -51,7 +52,7 @@ public class ExternalPropertiesHandler extends PropertiesHandler {
 
     public static ExternalPropertiesHandler newHandler(String fileName,
                                                        @Nullable PropertiesHandler fallbackProperties) throws IOException {
-        String path = PathHandler.getExternalPropertiesPath(fileName);
+        Path path = PathHandler.getExternalPropertiesPath(fileName);
         return new ExternalPropertiesHandler(path, fallbackProperties);
     }
 
