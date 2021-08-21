@@ -3,9 +3,11 @@ package common;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Comparator;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class FileHandler {
 
@@ -17,8 +19,7 @@ public class FileHandler {
     }
 
     public static void makeFile(Path path) throws IOException {
-        String fileName = path.getFileName().toString();
-        if (!fileName.contains(".")) {
+        if (!Files.isRegularFile(path)) {
             throw new IllegalArgumentException("The given path must point to a file");
         }
 
@@ -32,14 +33,47 @@ public class FileHandler {
         deletePathAndContent(file.toPath());
     }
 
-    public static void deletePathAndContent(Path path) throws IOException {
-        if (!Files.exists(path)) {
+    public static void deletePathAndContent(Path toDelete) throws IOException {
+        if (!Files.exists(toDelete)) {
             return;
         }
-        //noinspection ResultOfMethodCallIgnored
-        Files.walk(path)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+
+        Files.walkFileTree(toDelete, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc == null) {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                } else {
+                    throw exc;
+                }
+            }
+        });
+    }
+
+    public static void copyPathAndContent(Path source, Path destination) throws IOException {
+        if (!Files.exists(source)) {
+            return;
+        }
+
+        deletePathAndContent(destination);
+
+        Files.walkFileTree(source, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                Files.createDirectory(destination.resolve(source.relativize(dir)));
+                return FileVisitResult.CONTINUE;
+            }
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.copy(file, destination.resolve(source.relativize(file)));
+                return FileVisitResult.CONTINUE;
+            }
+        });
     }
 }
