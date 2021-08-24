@@ -22,7 +22,7 @@ public class Version implements Comparable<Version> {
         }
     }
 
-    public static Version of(String version) throws IllegalArgumentException {
+    public static Version parse(String version) throws IllegalArgumentException {
         return new Version(version);
     }
 

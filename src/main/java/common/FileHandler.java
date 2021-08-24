@@ -19,10 +19,6 @@ public class FileHandler {
     }
 
     public static void makeFile(Path path) throws IOException {
-        if (!Files.isRegularFile(path)) {
-            throw new IllegalArgumentException("The given path must point to a file");
-        }
-
         Files.createDirectories(path.getParent());
         try {
             Files.createFile(path);

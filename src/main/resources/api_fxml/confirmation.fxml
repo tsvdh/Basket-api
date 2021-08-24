@@ -17,7 +17,7 @@
             <children>
                <VBox alignment="CENTER" prefHeight="300.0" prefWidth="500.0" spacing="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <children>
-                     <Label fx:id="question" focusTraversable="false" text="Question">
+                     <Label fx:id="question" focusTraversable="false" text="Question" wrapText="true">
                         <padding>
                            <Insets left="40.0" right="40.0" />
                         </padding>

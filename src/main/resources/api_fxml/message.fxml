@@ -16,7 +16,7 @@
             <children>
                <VBox alignment="CENTER" prefHeight="300.0" prefWidth="500.0" spacing="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <children>
-                     <Label fx:id="message" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" text="Message">
+                     <Label fx:id="message" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" text="Message" wrapText="true">
                         <font>
                            <Font size="24.0" />
                         </font>
