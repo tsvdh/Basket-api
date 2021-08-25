@@ -6,7 +6,7 @@
 
     <groupId>com.github.tsvdh</groupId>
     <artifactId>basket-api</artifactId>
-    <version>0.2.6</version>
+    <version>0.2.7</version>
     <packaging>jar</packaging>
 
     <name>Basket-api</name>
@@ -57,7 +57,7 @@
     <dependencies>
         <dependency>
             <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
+            <artifactId>jna-platform-jpms</artifactId>
             <version>5.8.0</version>
         </dependency>
 
