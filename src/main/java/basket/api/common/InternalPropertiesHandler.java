@@ -1,13 +1,13 @@
-package common;
+package basket.api.common;
 
-import app.Property;
+import basket.api.app.Property;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Properties;
-import util.Util;
+import basket.api.util.Util;
 
-import static app.BasketApp.getImplementingClass;
+import static basket.api.app.BasketApp.getImplementingClass;
 
 
 public class InternalPropertiesHandler extends PropertiesHandler {

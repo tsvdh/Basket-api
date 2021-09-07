@@ -1,4 +1,4 @@
-package prebuilt;
+package basket.api.prebuilt;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;

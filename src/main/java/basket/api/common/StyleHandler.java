@@ -1,4 +1,4 @@
-package common;
+package basket.api.common;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,10 +14,10 @@ import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.JMetroStyleClass;
 import jfxtras.styles.jmetro.Style;
 import org.jetbrains.annotations.Nullable;
-import prebuilt.Message;
-import util.Util;
+import basket.api.prebuilt.Message;
+import basket.api.util.Util;
 
-import static app.BasketApp.getImplementingClass;
+import static basket.api.app.BasketApp.getImplementingClass;
 import static java.util.Objects.requireNonNull;
 
 public class StyleHandler {

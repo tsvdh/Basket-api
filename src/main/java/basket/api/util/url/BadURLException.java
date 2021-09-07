@@ -1,4 +1,4 @@
-package util.url;
+package basket.api.util.url;
 
 public class BadURLException extends RuntimeException {
 

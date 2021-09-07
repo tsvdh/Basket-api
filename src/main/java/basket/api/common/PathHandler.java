@@ -1,6 +1,6 @@
-package common;
+package basket.api.common;
 
-import app.BasketApp;
+import basket.api.app.BasketApp;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Shell32;
 import com.sun.jna.platform.win32.ShlObj;

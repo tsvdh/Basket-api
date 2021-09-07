@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.stage.Stage?>
 
-<Stage alwaysOnTop="true" resizable="false" title="Message" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="prebuilt.MessageController">
+<Stage alwaysOnTop="true" resizable="false" title="Message" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="basket.api.prebuilt.MessageController">
     <scene>
         <Scene>
             <AnchorPane prefHeight="300.0" prefWidth="500.0">

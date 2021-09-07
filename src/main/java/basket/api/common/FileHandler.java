@@ -1,4 +1,4 @@
-package common;
+package basket.api.common;
 
 import java.io.File;
 import java.io.IOException;

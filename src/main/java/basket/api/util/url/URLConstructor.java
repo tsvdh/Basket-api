@@ -1,4 +1,4 @@
-package util.url;
+package basket.api.util.url;
 
 import java.net.MalformedURLException;
 import java.net.URL;

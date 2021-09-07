@@ -1,6 +1,6 @@
-package common;
+package basket.api.common;
 
-import app.Property;
+import basket.api.app.Property;
 import java.util.Properties;
 
 public abstract class PropertiesHandler {

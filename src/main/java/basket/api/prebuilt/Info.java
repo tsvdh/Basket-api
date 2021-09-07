@@ -1,4 +1,4 @@
-package prebuilt;
+package basket.api.prebuilt;
 
 import java.io.IOException;
 import java.net.URL;
@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 public class Info {
 
     public Info(List<String> infoList) {
-        URL url = getClass().getResource("/api_fxml/info.fxml");
+        URL url = getClass().getResource("/basket/api/fxml/info.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
         Stage stage;

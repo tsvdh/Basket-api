@@ -4,12 +4,12 @@ module basket.api {
     requires org.jetbrains.annotations;
     requires org.jfxtras.styles.jmetro;
 
-    requires transitive javafx.controls;
-    requires transitive javafx.fxml;
+    requires javafx.controls;
+    requires javafx.fxml;
 
-    exports app;
-    exports common;
-    exports prebuilt;
-    exports util;
-    exports util.url;
+    exports basket.api.app;
+    exports basket.api.common;
+    exports basket.api.prebuilt;
+    exports basket.api.util;
+    exports basket.api.util.url;
 }

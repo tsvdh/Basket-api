@@ -1,11 +1,11 @@
-package app;
+package basket.api.app;
 
-import common.ExternalPropertiesHandler;
-import common.FatalError;
-import common.InternalPropertiesHandler;
-import common.StyleHandler;
+import basket.api.common.ExternalPropertiesHandler;
+import basket.api.common.FatalError;
+import basket.api.common.InternalPropertiesHandler;
+import basket.api.common.StyleHandler;
 import java.io.IOException;
-import util.Version;
+import basket.api.util.Version;
 
 /**
  * The main class of the Basket API.

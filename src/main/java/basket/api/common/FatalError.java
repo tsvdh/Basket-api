@@ -1,6 +1,6 @@
-package common;
+package basket.api.common;
 
-import prebuilt.Message;
+import basket.api.prebuilt.Message;
 
 // Throw this to indicate the program is unable to continue execution
 public class FatalError extends Error {

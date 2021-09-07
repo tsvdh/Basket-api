@@ -1,4 +1,4 @@
-package prebuilt;
+package basket.api.prebuilt;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
