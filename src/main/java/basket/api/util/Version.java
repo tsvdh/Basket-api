@@ -1,13 +1,18 @@
 package basket.api.util;
 
+import java.io.Serial;
+import java.io.Serializable;
 import org.jetbrains.annotations.NotNull;
 
-public class Version implements Comparable<Version> {
+public class Version implements Comparable<Version>, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1;
 
     private static final int LENGTH = 3;
 
-    private final String raw;
-    private final int[] array;
+    public final String raw;
+    public final int[] array;
 
     public Version(String version) throws IllegalArgumentException {
         raw = version;
