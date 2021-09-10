@@ -11,12 +11,12 @@ public class Version implements Comparable<Version>, Serializable {
 
     private static final int LENGTH = 3;
 
-    public final String raw;
-    public final int[] array;
+    public String stringVersion;
+    public int[] array;
 
-    public Version(String version) throws IllegalArgumentException {
-        raw = version;
-        String[] strings = version.split("\\.");
+    public Version(String stringVersion) throws IllegalArgumentException {
+        this.stringVersion = stringVersion;
+        String[] strings = stringVersion.split("\\.");
         if (strings.length != LENGTH) {
             throw new IllegalArgumentException("Version not of length " + LENGTH);
         }
@@ -33,7 +33,7 @@ public class Version implements Comparable<Version>, Serializable {
 
     @Override
     public String toString() {
-        return raw;
+        return stringVersion;
     }
 
     @Override
