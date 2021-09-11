@@ -12,4 +12,5 @@ module basket.api {
     exports basket.api.prebuilt;
     exports basket.api.util;
     exports basket.api.util.url;
+    exports basket.api.util.uri;
 }
