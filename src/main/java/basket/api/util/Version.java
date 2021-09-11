@@ -1,22 +1,17 @@
 package basket.api.util;
 
-import java.io.Serial;
-import java.io.Serializable;
 import org.jetbrains.annotations.NotNull;
 
-public class Version implements Comparable<Version>, Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1;
+public class Version implements Comparable<Version> {
 
     private static final int LENGTH = 3;
 
-    public String stringVersion;
-    public int[] array;
+    private final String stringVersion;
+    private final int[] array;
 
-    public Version(String stringVersion) throws IllegalArgumentException {
-        this.stringVersion = stringVersion;
-        String[] strings = stringVersion.split("\\.");
+    public Version(String version) throws IllegalArgumentException {
+        this.stringVersion = version;
+        String[] strings = version.split("\\.");
         if (strings.length != LENGTH) {
             throw new IllegalArgumentException("Version not of length " + LENGTH);
         }
