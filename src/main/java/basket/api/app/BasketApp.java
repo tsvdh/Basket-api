@@ -7,6 +7,8 @@ import basket.api.common.StyleHandler;
 import java.io.IOException;
 import basket.api.util.Version;
 
+import static java.lang.Runtime.getRuntime;
+
 /**
  * The main class of the Basket API.
  * Use this class by implementing the start method, and then calling the run method.
@@ -157,7 +159,7 @@ public abstract class BasketApp {
         styleHandler = app.makeStyleHandler();
         styleHandler.applyStyleToApplication();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        getRuntime().addShutdownHook(new Thread(() -> {
             // store settings in case app didn't do it
             if (settingsHandler != null) {
                 try {
