@@ -7,7 +7,7 @@ import com.sun.jna.platform.win32.ShlObj;
 import com.sun.jna.platform.win32.WinDef;
 import java.nio.file.Path;
 
-public class PathHandler { // TODO: allow for multiple installation possibilities
+public class PathHandler {
 
     // This class should not be instantiated
     private PathHandler() {}
@@ -40,12 +40,11 @@ public class PathHandler { // TODO: allow for multiple installation possibilitie
     }
 
     public static Path getProgramFilesPath() {
-        return getPath(ShlObj.CSIDL_PROGRAM_FILES).resolve(LAUNCHER_NAME);
+        return getPath(ShlObj.CSIDL_PROGRAM_FILES);
     }
 
     private static Path getBasketHomePath() {
-        String userHome = System.getProperty("user.home");
-        return Path.of(userHome + "/" + LAUNCHER_NAME);
+        return getProgramFilesPath().resolve(LAUNCHER_NAME);
     }
 
     public static Path getAppHomePath(String appName) {
