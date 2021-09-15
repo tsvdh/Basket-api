@@ -24,8 +24,8 @@ public class StyleHandler {
 
     public enum Location {
 
-        INTERNAL(PathHandler::getInternalCSS),
-        EXTERNAL(PathHandler::getExternalCSS);
+        INTERNAL(PathHandler::getInternalCSSPath),
+        EXTERNAL(PathHandler::getExternalCSSPath);
 
         Location(Function<String, Path> pathGetter) {
             this.pathGetter = pathGetter;

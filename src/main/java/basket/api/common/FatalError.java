@@ -9,13 +9,10 @@ public class FatalError extends Error {
         super(cause);
 
         try {
-            new Message(cause.getMessage(), true);
+            new Message(cause.toString(), true);
         } catch (Exception ignored) {}
 
-        System.err.println(cause.getMessage());
-
-        // Platform.exit();
-        // System.exit(1);
+        System.err.println(cause.toString());
     }
 }
 

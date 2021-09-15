@@ -14,6 +14,25 @@ public class PathHandler {
 
     public static final String LAUNCHER_NAME = "Basket";
 
+    /**
+     * Returns the path of the given location
+     * @param location the location to get, use a static attribute of {@code ShlObj} from {@code jna}
+     * @return the desired path
+     */
+    public static Path getPath(int location) {
+        char[] pszPath = new char[WinDef.MAX_PATH];
+        Shell32.INSTANCE.SHGetFolderPath(null, location, null, ShlObj.SHGFP_TYPE_CURRENT, pszPath);
+        return Path.of(Native.toString(pszPath));
+    }
+
+    public static Path getBasketHomePath() {
+        return getPath(ShlObj.CSIDL_APPDATA).resolve(LAUNCHER_NAME);
+    }
+
+    public static Path getDataFolderOfAppPath(String appName) {
+        return getBasketHomePath().resolve("apps/data").resolve(appName);
+    }
+
     public static Path getInternalPropertiesPath(String fileName) {
         return Path.of("/properties/" + fileName + ".properties");
     }
@@ -21,58 +40,27 @@ public class PathHandler {
     public static Path getExternalPropertiesPath(String fileName) {
         String appName = BasketApp.getAppName();
         Path folderPath;
-        if (appName.equals("Basket")) {
-            folderPath = getBasketHomePath().resolve("resources/private");
+        if (appName.equalsIgnoreCase("basket")) {
+            folderPath = getDataFolderOfAppPath(".self");
         } else {
-            folderPath = getAppFolderPath(appName);
+            folderPath = getDataFolderOfAppPath(appName);
         }
         return folderPath.resolve(fileName + ".properties");
     }
 
-    private static Path getPath(int location) {
-        char[] pszPath = new char[WinDef.MAX_PATH];
-        Shell32.INSTANCE.SHGetFolderPath(null, location, null, ShlObj.SHGFP_TYPE_CURRENT, pszPath);
-        return Path.of(Native.toString(pszPath));
-    }
-
-    public static Path getAppFolderPath(String appName) {
-        return getPath(ShlObj.CSIDL_APPDATA).resolve(LAUNCHER_NAME + "/" + appName);
-    }
-
-    public static Path getProgramFilesPath() {
-        return getPath(ShlObj.CSIDL_PROGRAM_FILES);
-    }
-
-    private static Path getBasketHomePath() {
-        return getProgramFilesPath().resolve(LAUNCHER_NAME);
-    }
-
-    public static Path getAppHomePath(String appName) {
-        Path basketHome = getBasketHomePath();
-        return basketHome.resolve("library/" + appName);
-    }
-
-    public static Path getDesktopPath() {
-        return getPath(ShlObj.CSIDL_DESKTOP);
-    }
-
-    public static Path getStartupPath() {
-        return getPath(ShlObj.CSIDL_STARTUP);
-    }
-
-    public static Path getInternalImagePath(String fileName) {
+    public static Path getInternalImagesPath(String fileName) {
         return Path.of("/images/" + fileName);
     }
 
     public static Path getIconPath() {
-        return getInternalImagePath("icon.png");
+        return getInternalImagesPath("icon.png");
     }
 
-    public static Path getInternalCSS(String fileName) {
+    public static Path getInternalCSSPath(String fileName) {
         return Path.of("/style/" + fileName + ".css");
     }
 
-    public static Path getExternalCSS(String fileName) {
-        return getBasketHomePath().resolve("resources/public/style/" + fileName + ".css");
+    public static Path getExternalCSSPath(String fileName) {
+        return getBasketHomePath().resolve("resources/style/" + fileName + ".css");
     }
 }
