@@ -20,7 +20,8 @@ import static java.lang.Runtime.getRuntime;
  *     <li>Your resource folders are opened to the api module {@code (basket.api)} in the {@code module-info.java} file.</li>
  *     <li>{@code .properties} files are in the {@code properties} folder.</li>
  *     <li>This folder must contain a file called {@code pom.properties}, which contains {@code name} and {@code version} keys.
- *     The values of these keys can be retrieved from the pom with the {@code ${} } construct.</li>
+ *     The values of these keys can be retrieved from the pom with the {@code ${} } syntax.
+ *     Make sure {@code name} equals the name entered in the database.</li>
  *     <li>Images or other visual data are in the {@code images} folder.</li>
  *     <li>The main icon of your app is called {@code icon.png}</li>
  *     <li>Any style files ({@code .css}, {@code .ttf}) are in the {@code style} folder.</li>
