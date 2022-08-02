@@ -1,4 +1,4 @@
-package basket.api.common;
+package basket.api.handlers;
 
 import basket.api.app.Property;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import basket.api.util.Util;
 
 import static basket.api.app.BasketApp.getImplementingClass;
 
-
+@Deprecated
 public class InternalPropertiesHandler extends PropertiesHandler {
 
     // root of the path must be the resources folder
@@ -23,7 +23,7 @@ public class InternalPropertiesHandler extends PropertiesHandler {
     }
 
     public static InternalPropertiesHandler newHandler(String fileName) throws IOException {
-        Path path = PathHandler.getInternalPropertiesPath(fileName);
+        Path path = PathHandler.getInternalDataPath(fileName);
         return new InternalPropertiesHandler(path);
     }
 

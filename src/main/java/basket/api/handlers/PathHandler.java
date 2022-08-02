@@ -1,4 +1,4 @@
-package basket.api.common;
+package basket.api.handlers;
 
 import basket.api.app.BasketApp;
 import com.sun.jna.Native;
@@ -29,23 +29,24 @@ public class PathHandler {
         return getPath(ShlObj.CSIDL_APPDATA).resolve(LAUNCHER_NAME);
     }
 
-    public static Path getDataFolderOfAppPath(String appName) {
-        return getBasketHomePath().resolve("apps/data").resolve(appName);
+    public static Path getDataFolderOfAppPath(String appId) {
+        return getBasketHomePath().resolve("apps/data").resolve(appId);
     }
 
-    public static Path getInternalPropertiesPath(String fileName) {
-        return Path.of("/properties/" + fileName + ".properties");
+    public static Path getInternalDataPath(String fileName) {
+        return Path.of("/data/" + fileName);
     }
 
-    public static Path getExternalPropertiesPath(String fileName) {
-        String appName = BasketApp.getAppName();
+    public static Path getExternalFilePath(String fileName) {
+        String appId = BasketApp.getAppId();
+
         Path folderPath;
-        if (appName.equalsIgnoreCase("basket")) {
+        if (appId.equalsIgnoreCase("basket")) {
             folderPath = getDataFolderOfAppPath(".self");
         } else {
-            folderPath = getDataFolderOfAppPath(appName);
+            folderPath = getDataFolderOfAppPath(appId);
         }
-        return folderPath.resolve(fileName + ".properties");
+        return folderPath.resolve(fileName);
     }
 
     public static Path getInternalImagesPath(String fileName) {
@@ -56,11 +57,11 @@ public class PathHandler {
         return getInternalImagesPath("icon.png");
     }
 
-    public static Path getInternalCSSPath(String fileName) {
-        return Path.of("/style/" + fileName + ".css");
+    public static Path getInternalStylePath(String fileName) {
+        return Path.of("/style/" + fileName);
     }
 
-    public static Path getExternalCSSPath(String fileName) {
-        return getBasketHomePath().resolve("resources/style/" + fileName + ".css");
+    public static Path getExternalStylePath(String fileName) {
+        return getBasketHomePath().resolve("resources/style/" + fileName);
     }
 }

@@ -2,6 +2,7 @@ package basket.api.util;
 
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public class Version implements Comparable<Version> {
 
     private static final int LENGTH = 3;

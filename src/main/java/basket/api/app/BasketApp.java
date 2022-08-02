@@ -1,86 +1,84 @@
 package basket.api.app;
 
-import basket.api.common.ExternalPropertiesHandler;
-import basket.api.common.FatalError;
-import basket.api.common.InternalPropertiesHandler;
-import basket.api.common.StyleHandler;
+import basket.api.handlers.JSONHandler;
+import basket.api.handlers.PathHandler;
+import basket.api.handlers.StyleHandler;
+import basket.api.util.FatalError;
 import java.io.IOException;
-import basket.api.util.Version;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.jetbrains.annotations.Nullable;
 
+import static basket.api.util.uri.URIConstructor.toURI;
 import static java.lang.Runtime.getRuntime;
 
 /**
  * The main class of the Basket API.
- * Use this class by implementing the start method, and then calling the run method.
+ * Use this class by implementing the {@code start} method, and then calling the {@code launch} method.
  * <p>
  * <p>
  * Some assumptions are made about the structure of your project:
  * <ul>
  *     <li>All resources files are in a directory tagged as a resources folder.</li>
- *     <li>Your resource folders are opened to the api module {@code (basket.api)} in the {@code module-info.java} file.</li>
- *     <li>{@code .properties} files are in the {@code properties} folder.</li>
- *     <li>This folder must contain a file called {@code pom.properties}, which contains {@code name} and {@code version} keys.
- *     The values of these keys can be retrieved from the pom with the {@code ${} } syntax.
- *     Make sure {@code name} equals the name entered in the database.</li>
+ *     <li>Your resource folders are opened to the api module ({@code basket.api}) in the {@code module-info.java} file.</li>
+ *     <li>Data ({@code .json}) files are in the {@code data} folder.
+ *          <br> {@code _info.json} is a reserved file name, do not use it yourself.</li>
+ *     <li>Optionally, you can put {@code settings.json} in the data folder to be used as standard settings.</li>
  *     <li>Images or other visual data are in the {@code images} folder.</li>
  *     <li>The main icon of your app is called {@code icon.png}</li>
  *     <li>Any style files ({@code .css}, {@code .ttf}) are in the {@code style} folder.</li>
  * </ul>
  * <p>
  * <p>
- * Three handler objects are made available through this class:
+ * Two handler objects are made available through this class:
  * <ul>
- *     <li>{@code pomHandler}, handles the {@code .properties} file of the internal pom.</li>
- *     <li>{@code settingsHandler}, handler the {@code .properties} file of the external settings file.</li>
+ *     <li>{@code settingsHandler}, handler of the external settings ({@code .json}) file.</li>
  *     <li>{@code styleHandler}, handles applying style to JavaFX scenes.</li>
  * </ul>
  * <p>
- * Override the method {@code makeStyleHandler} if you wish to use another style.
+ * Override {@code make-} methods to modify default behaviour.
  * <p>
  * <p>
- * Use this pattern if you are using JavaFX, in order to reduce the number of launching classes.
- * <pre>
+ * Use the API with this pattern if you are using JavaFX.
+ * <pre>{@code
  * public class Main extends Application {
  *
  *     public static class MyApp extends BasketApp {
  *
- *        {@code @Override}
- *         public void start() {
- *             // starting point for program
+ *         @Override
+ *         protected @Nullable <NewT> TypeReference<NewT> makeSettingsObjectType() {
+ *             return null;
  *         }
  *
- *         public static void invokeLaunch() {
- *             MyApp.launch();
+ *         @Override
+ *         protected void start() {
+ *             // entry point for program
  *         }
  *     }
  *
- *    {@code @Override}
+ *     @Override
  *     public void start(Stage primaryStage) {
- *         MyApp.invokeLaunch();
+ *         MyApp.launch(MyApp.class);
  *     }
  *
  *     public static void main(String[] args) {
  *         Application.launch();
  *     }
  * }
- * </pre>
+ * }</pre>
  */
 public abstract class BasketApp {
 
-    private static Class<?> implementingClass; // for loading from the correct module
-    private static InternalPropertiesHandler pomHandler;
-    private static ExternalPropertiesHandler settingsHandler;
+    private static Class<? extends BasketApp> implementingClass; // for loading from the correct module
+    private static JSONHandler<Object> settingsHandler;
     private static StyleHandler styleHandler;
 
     public static Class<?> getImplementingClass() {
         return implementingClass;
     }
 
-    public static InternalPropertiesHandler getPomHandler() {
-        return pomHandler;
-    }
-
-    public static ExternalPropertiesHandler getSettingsHandler() {
+    public static JSONHandler<Object> getSettingsHandler() {
         return settingsHandler;
     }
 
@@ -88,13 +86,31 @@ public abstract class BasketApp {
         return styleHandler;
     }
 
-    public abstract void start();
+    /**
+     * Returns a class to convert the settings handler to.
+     * @return A {@code Class} or null
+     */
+    protected abstract @Nullable Class<?> getSettingsObjectClass();
+
+    /**
+     * Contains the code to start your app.
+     */
+    protected abstract void start();
 
     /**
      * Override this method if you want to change the default style sheet.
+     * @return the style handler to use for the app
      */
-    public StyleHandler makeStyleHandler() {
+    protected StyleHandler makeStyleHandler() {
         return StyleHandler.with(StyleHandler.PreBuiltStyle.JMETRO);
+    }
+
+    /**
+     * Override this method if you want to use a different settings file.
+     * @return the new {@code Path}
+     */
+    protected Path makeSettingsPath() {
+        return PathHandler.getExternalFilePath("settings.json");
     }
 
     private static Class<?> getCallingClass() {
@@ -125,59 +141,88 @@ public abstract class BasketApp {
         }
     }
 
+    /**
+     * Call this method to launch the app.
+     * This method must be called from a class implementing {@code BasketApp}.
+     * You can call this method from another class with {@link #launch(Class)}.
+     */
     public static void launch() {
         Class<?> callingClass = getCallingClass();
+        Class<? extends BasketApp> implementingClass;
+
+        try {
+            implementingClass = callingClass.asSubclass(BasketApp.class);
+        } catch (ClassCastException e) {
+            throw new FatalError("%s must extend %s".formatted(callingClass.getName(), BasketApp.class.getName()), e);
+        }
+
+        launch(implementingClass);
+    }
+
+    /**
+     * Call this method to launch the app from another class.
+     * @param implementingClass the class that implements {@code BasketApp}
+     */
+    public static void launch(Class<? extends BasketApp> implementingClass) {
+        BasketApp.implementingClass = implementingClass;
 
         BasketApp app;
         try {
-            if (callingClass.getSuperclass() == BasketApp.class) {
-                app = (BasketApp) callingClass.getConstructor().newInstance();
-            }
-            else {
-                throw new IllegalStateException(callingClass.getName() + " must extend " + BasketApp.class.getName());
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            app = implementingClass.getConstructor().newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new FatalError("Could not instantiate "+ implementingClass.getName(), e);
         }
-
-        implementingClass = callingClass;
 
         try {
-            pomHandler = InternalPropertiesHandler.newHandler("pom");
+            Path internalPath = PathHandler.getInternalDataPath("settings.json");
+            Path externalPath = app.makeSettingsPath();
 
-            InternalPropertiesHandler fallbackSettings; // TODO: implement try with resource pattern
-            try {
-                fallbackSettings = InternalPropertiesHandler.newHandler("settings");
-            } catch (IOException e) {
-                fallbackSettings = null;
+            if (internalPath.toFile().exists() && !externalPath.toFile().exists()) {
+                Files.copy(internalPath, externalPath);
             }
-            settingsHandler = ExternalPropertiesHandler.newHandler("settings", fallbackSettings);
+
+            settingsHandler = new JSONHandler<>(externalPath);
         }
         catch (IOException e) {
-            throw new FatalError(e);
+            // ignore as settings handler is optional
+        }
+
+        if (settingsHandler != null) {
+            settingsHandler.convertObjectTo(app.getSettingsObjectClass());
+
+            getRuntime().addShutdownHook(new Thread(() -> {
+                // store settings in case app didn't do it
+                try {
+                    settingsHandler.save();
+                } catch (IOException e) {
+                    // don't display error as shutdown shouldn't be delayed
+                }
+            }));
         }
 
         styleHandler = app.makeStyleHandler();
         styleHandler.applyStyleToApplication();
 
-        getRuntime().addShutdownHook(new Thread(() -> {
-            // store settings in case app didn't do it
-            if (settingsHandler != null) {
-                try {
-                    settingsHandler.save();
-                } catch (IOException ignored) {} // don't display error as shutdown shouldn't be delayed
-            }
-        }));
-
         app.start();
     }
 
-    public static String getAppName() {
-        return pomHandler.getProperties().getProperty("name");
-    }
+    public static String getAppId() {
+        URL url = BasketApp.class.getResource(BasketApp.class.getSimpleName() + ".class");
 
-    public static Version getAppVersion() {
-        String version = pomHandler.getProperties().getProperty("version");
-        return new Version(version);
+        if (url == null) {
+            throw new FatalError("Cannot find current class");
+        }
+
+        Path currentPath = Path.of(toURI(url));
+
+        while (!currentPath.endsWith("image")) {
+            currentPath = currentPath.getParent();
+        }
+
+        if (currentPath.getParent().endsWith("Basket")) {
+            return ".self";
+        } else {
+            return currentPath.getParent().getFileName().toString();
+        }
     }
 }

@@ -1,8 +1,9 @@
-package basket.api.common;
+package basket.api.handlers;
 
 import basket.api.app.Property;
 import java.util.Properties;
 
+@Deprecated
 public abstract class PropertiesHandler {
 
     Properties properties;

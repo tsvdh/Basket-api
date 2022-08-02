@@ -1,4 +1,4 @@
-package basket.api.common;
+package basket.api.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +24,8 @@ public class StyleHandler {
 
     public enum Location {
 
-        INTERNAL(PathHandler::getInternalCSSPath),
-        EXTERNAL(PathHandler::getExternalCSSPath);
+        INTERNAL(PathHandler::getInternalStylePath),
+        EXTERNAL(PathHandler::getExternalStylePath);
 
         Location(Function<String, Path> pathGetter) {
             this.pathGetter = pathGetter;

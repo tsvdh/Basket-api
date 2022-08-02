@@ -1,4 +1,4 @@
-package basket.api.common;
+package basket.api.handlers;
 
 import basket.api.app.Property;
 import java.io.File;
@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated
 public class ExternalPropertiesHandler extends PropertiesHandler {
 
     private final File file;
@@ -50,9 +51,8 @@ public class ExternalPropertiesHandler extends PropertiesHandler {
         }
     }
 
-    public static ExternalPropertiesHandler newHandler(String fileName,
-                                                       @Nullable PropertiesHandler fallbackProperties) throws IOException {
-        Path path = PathHandler.getExternalPropertiesPath(fileName);
+    public static ExternalPropertiesHandler newHandler(String fileName, @Nullable PropertiesHandler fallbackProperties) throws IOException {
+        Path path = PathHandler.getExternalFilePath(fileName);
         return new ExternalPropertiesHandler(path, fallbackProperties);
     }
 
