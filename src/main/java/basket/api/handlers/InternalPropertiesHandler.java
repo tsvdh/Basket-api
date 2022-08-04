@@ -15,7 +15,7 @@ public class InternalPropertiesHandler extends PropertiesHandler {
     // root of the path must be the resources folder
     public InternalPropertiesHandler(Path path) throws IOException {
         this.properties = new Properties();
-        try (InputStream in = getImplementingClass().getResourceAsStream(Util.pathToJavaPath(path))) {
+        try (InputStream in = getImplementingClass().getResourceAsStream(Util.pathToJavaString(path))) {
             properties.load(in);
         } catch (NullPointerException e) {
             throw new IOException(e);

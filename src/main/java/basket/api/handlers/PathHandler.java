@@ -29,8 +29,12 @@ public class PathHandler {
         return getPath(ShlObj.CSIDL_APPDATA).resolve(LAUNCHER_NAME);
     }
 
-    public static Path getDataFolderOfAppPath(String appId) {
+    public static Path getAppDataPath(String appId) {
         return getBasketHomePath().resolve("apps/data").resolve(appId);
+    }
+
+    public static Path getAppLibraryPath(String appId) {
+        return getBasketHomePath().resolve("apps/library").resolve(appId);
     }
 
     public static Path getInternalDataPath(String fileName) {
@@ -40,12 +44,8 @@ public class PathHandler {
     public static Path getExternalFilePath(String fileName) {
         String appId = BasketApp.getAppId();
 
-        Path folderPath;
-        if (appId.equalsIgnoreCase("basket")) {
-            folderPath = getDataFolderOfAppPath(".self");
-        } else {
-            folderPath = getDataFolderOfAppPath(appId);
-        }
+        Path folderPath = getAppDataPath(appId);
+
         return folderPath.resolve(fileName);
     }
 

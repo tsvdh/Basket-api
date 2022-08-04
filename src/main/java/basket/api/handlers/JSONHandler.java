@@ -1,13 +1,18 @@
 package basket.api.handlers;
 
 import basket.api.util.FatalError;
+import basket.api.util.Util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+
+import static basket.api.app.BasketApp.getImplementingClass;
 
 public class JSONHandler<T> {
 
@@ -25,13 +30,28 @@ public class JSONHandler<T> {
         this.path = path;
 
         try {
-            // TODO: check if necessary
-            // InputStream in = getImplementingClass().getResourceAsStream(Util.pathToJavaPath(path))
-            this.object = objectMapper.readValue(path.toFile(), new TypeReference<>() {});
+            InputStream stream = getImplementingClass().getResourceAsStream(Util.pathToJavaString(path));
+            this.object = objectMapper.readValue(stream, new TypeReference<>() {});
         } catch (JsonProcessingException e) {
             throw new FatalError(e);
         }
 
+        this.convertedObject = null;
+    }
+
+    public JSONHandler(Path path, T object) throws IOException {
+        this.path = path;
+
+        Files.deleteIfExists(path);
+        FileHandler.makeFile(path);
+
+        try {
+            objectMapper.writeValue(path.toFile(), object);
+        } catch (JsonProcessingException e) {
+            throw new FatalError(e);
+        }
+
+        this.object = object;
         this.convertedObject = null;
     }
 
@@ -65,5 +85,9 @@ public class JSONHandler<T> {
             // re-throw as this is not expected and shouldn't be handled
             throw new RuntimeException(e);
         }
+    }
+
+    public static <T> JSONHandler<T> create(Path path, T object) throws IOException {
+        return new JSONHandler<>(path, object);
     }
 }

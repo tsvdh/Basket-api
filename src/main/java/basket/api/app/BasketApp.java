@@ -1,13 +1,19 @@
 package basket.api.app;
 
+import basket.api.handlers.FileHandler;
 import basket.api.handlers.JSONHandler;
 import basket.api.handlers.PathHandler;
 import basket.api.handlers.StyleHandler;
 import basket.api.util.FatalError;
+import basket.api.util.Util;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import org.jetbrains.annotations.Nullable;
 
 import static basket.api.util.uri.URIConstructor.toURI;
@@ -175,16 +181,23 @@ public abstract class BasketApp {
 
         try {
             Path internalPath = PathHandler.getInternalDataPath("settings.json");
+
+            InputStream internalStream = implementingClass.getResourceAsStream(Util.pathToJavaString(internalPath));
+            if (internalStream == null) {
+                throw new IOException("Could not find " + internalPath);
+            }
+
             Path externalPath = app.makeSettingsPath();
 
-            if (internalPath.toFile().exists() && !externalPath.toFile().exists()) {
-                Files.copy(internalPath, externalPath);
+            if (!externalPath.toFile().exists()) {
+                FileHandler.makeFileDirectories(externalPath);
+                Files.copy(internalStream, externalPath);
             }
 
             settingsHandler = new JSONHandler<>(externalPath);
         }
         catch (IOException e) {
-            // ignore as settings handler is optional
+            System.err.println("Could not create settings handler: " + e.getMessage());
         }
 
         if (settingsHandler != null) {
@@ -213,7 +226,28 @@ public abstract class BasketApp {
             throw new FatalError("Cannot find current class");
         }
 
-        Path currentPath = Path.of(toURI(url));
+        var env = new HashMap<String, String>();
+        env.put("create", "true");
+
+        FileSystem jarFs;
+        try {
+            jarFs = FileSystems.newFileSystem(toURI(url), env);
+        } catch (IOException e) {
+            throw new FatalError(e);
+        }
+
+        Path currentPath = Path.of(jarFs.toString());
+
+        try {
+            jarFs.close();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
+        if (!currentPath.startsWith(PathHandler.getBasketHomePath().toAbsolutePath())) {
+            // not in installed directory, so running locally
+            return ".self";
+        }
 
         while (!currentPath.endsWith("image")) {
             currentPath = currentPath.getParent();

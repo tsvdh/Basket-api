@@ -25,6 +25,14 @@ public class FileHandler {
         } catch (FileAlreadyExistsException ignored) {}
     }
 
+    public static void makeFileDirectories(File file) throws IOException{
+        makeFileDirectories(file.toPath());
+    }
+
+    public static void makeFileDirectories(Path path) throws IOException {
+        Files.createDirectories(path.getParent());
+    }
+
     public static void deletePathAndContent(File file) throws IOException {
         deletePathAndContent(file.toPath());
     }

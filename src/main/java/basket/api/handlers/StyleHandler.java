@@ -84,7 +84,7 @@ public class StyleHandler {
             case INTERNAL -> {
                 Path relativePath = location.pathGetter.apply(fileName);
                 try {
-                    path = requireNonNull(getImplementingClass().getResource(Util.pathToJavaPath(relativePath))).toExternalForm();
+                    path = requireNonNull(getImplementingClass().getResource(Util.pathToJavaString(relativePath))).toExternalForm();
                 } catch (NullPointerException e) {
                     try {
                         new Message("Unable to get internal stylesheet at: " + relativePath, true);
@@ -148,7 +148,7 @@ public class StyleHandler {
     public static void setIcon(Stage stage) {
         Path path = PathHandler.getIconPath();
 
-        try (InputStream in = getImplementingClass().getResourceAsStream(Util.pathToJavaPath(path))) {
+        try (InputStream in = getImplementingClass().getResourceAsStream(Util.pathToJavaString(path))) {
             InputStream iconStream = requireNonNull(in);
 
             stage.getIcons().clear();

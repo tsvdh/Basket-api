@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Util {
 
-    public static String pathToJavaPath(Path path) {
+    public static String pathToJavaString(Path path) {
         return path.toString().replace(File.separatorChar, '/');
     }
 
