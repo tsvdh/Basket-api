@@ -17,7 +17,6 @@ import java.util.HashMap;
 import org.jetbrains.annotations.Nullable;
 
 import static basket.api.util.uri.URIConstructor.toURI;
-import static java.lang.Runtime.getRuntime;
 
 /**
  * The main class of the Basket API.
@@ -202,15 +201,6 @@ public abstract class BasketApp {
 
         if (settingsHandler != null) {
             settingsHandler.convertObjectTo(app.getSettingsObjectClass());
-
-            getRuntime().addShutdownHook(new Thread(() -> {
-                // store settings in case app didn't do it
-                try {
-                    settingsHandler.save();
-                } catch (IOException e) {
-                    // don't display error as shutdown shouldn't be delayed
-                }
-            }));
         }
 
         styleHandler = app.makeStyleHandler();

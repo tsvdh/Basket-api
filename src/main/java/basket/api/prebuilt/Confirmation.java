@@ -11,26 +11,13 @@ public class Confirmation {
 
     private final static String QUESTION = "Do you want to perform the action?";
 
-    // This class should not be instantiated
-    private Confirmation() {}
+    private final ConfirmationController controller;
 
-    public static boolean getConfirmation() {
-        return getConfirmation(QUESTION);
+    public Confirmation() {
+        this(QUESTION);
     }
 
-    public static boolean getConfirmation(String question) {
-        return getConfirmation(question, true);
-    }
-
-    public static boolean getConfirmation(boolean show) {
-        return getConfirmation(QUESTION, show);
-    }
-
-    public static boolean getConfirmation(String question, boolean show) {
-        if (!show) {
-            return true;
-        }
-
+    public Confirmation(String question) {
         URL url = Confirmation.class.getResource("/basket/api/fxml/confirmation.fxml");
         FXMLLoader loader = new FXMLLoader(url);
 
@@ -41,13 +28,15 @@ public class Confirmation {
             throw new RuntimeException(e);
         }
 
-        ConfirmationController controller = loader.getController();
+        controller = loader.getController();
         controller.init(stage, question);
 
         stage.initModality(Modality.APPLICATION_MODAL);
 
         stage.showAndWait();
+    }
 
+    public boolean getResult() {
         return controller.getConfirmation();
     }
 }
