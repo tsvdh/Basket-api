@@ -87,7 +87,24 @@ public class JSONHandler<T> {
         }
     }
 
-    public static <T> JSONHandler<T> create(Path path, T object) throws IOException {
-        return new JSONHandler<>(path, object);
+    public void save(T object) throws IOException {
+        try {
+            objectMapper.writeValue(path.toFile(), object);
+        } catch (JsonProcessingException e) {
+            // re-throw as this is not expected and shouldn't be handled
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <T> JSONHandler<T> create(Path path, T object)  throws IOException {
+        return create(path, object, true);
+    }
+
+    public static <T> JSONHandler<T> create(Path path, T object, boolean replaceExisting) throws IOException {
+        if (!replaceExisting && path.toFile().exists()) {
+            return new JSONHandler<>(path);
+        }  else {
+            return new JSONHandler<>(path, object);
+        }
     }
 }

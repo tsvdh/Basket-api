@@ -76,8 +76,12 @@ import static basket.api.util.uri.URIConstructor.toURI;
 public abstract class BasketApp {
 
     private static Class<? extends BasketApp> implementingClass; // for loading from the correct module
+
     private static JSONHandler<Object> settingsHandler;
+
     private static StyleHandler styleHandler;
+
+    private static String appId;
 
     public static Class<?> getImplementingClass() {
         return implementingClass;
@@ -210,6 +214,10 @@ public abstract class BasketApp {
     }
 
     public static String getAppId() {
+        if (appId != null) {
+            return appId;
+        }
+
         URL url = BasketApp.class.getResource(BasketApp.class.getSimpleName() + ".class");
 
         if (url == null) {
@@ -243,10 +251,15 @@ public abstract class BasketApp {
             currentPath = currentPath.getParent();
         }
 
+        String foundId;
+
         if (currentPath.getParent().endsWith("Basket")) {
-            return ".self";
+            foundId = ".self";
         } else {
-            return currentPath.getParent().getFileName().toString();
+            foundId = currentPath.getParent().getFileName().toString();
         }
+
+        appId = foundId;
+        return appId;
     }
 }
