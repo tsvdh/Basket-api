@@ -30,8 +30,12 @@ public class JSONHandler<T> {
         this.path = path;
 
         try {
-            InputStream stream = getImplementingClass().getResourceAsStream(Util.pathToJavaString(path));
-            this.object = objectMapper.readValue(stream, new TypeReference<>() {});
+            if (path.isAbsolute()) {
+                this.object = objectMapper.readValue(path.toFile(), new TypeReference<T>() {});
+            } else {
+                InputStream stream = getImplementingClass().getResourceAsStream(Util.pathToJavaString(path));
+                this.object = objectMapper.readValue(stream, new TypeReference<>() {});
+            }
         } catch (JsonProcessingException e) {
             throw new FatalError(e);
         }
@@ -40,6 +44,10 @@ public class JSONHandler<T> {
     }
 
     public JSONHandler(Path path, T object) throws IOException {
+        if (!path.isAbsolute()) {
+            throw new IOException("Can only write to absolute paths");
+        }
+
         this.path = path;
 
         Files.deleteIfExists(path);
