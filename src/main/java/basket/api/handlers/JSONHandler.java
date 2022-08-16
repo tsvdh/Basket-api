@@ -27,14 +27,26 @@ public class JSONHandler<T> {
     private Object convertedObject;
 
     public JSONHandler(Path path) throws IOException {
+        this(path, (Class<T>) null);
+    }
+
+    public JSONHandler(Path path, Class<T> tClass) throws IOException {
         this.path = path;
 
         try {
             if (path.isAbsolute()) {
-                this.object = objectMapper.readValue(path.toFile(), new TypeReference<T>() {});
+                if (tClass != null) {
+                    this.object = objectMapper.readValue(path.toFile(), tClass);
+                } else {
+                    this.object = objectMapper.readValue(path.toFile(), new TypeReference<T>() {});
+                }
             } else {
                 InputStream stream = getImplementingClass().getResourceAsStream(Util.pathToJavaString(path));
-                this.object = objectMapper.readValue(stream, new TypeReference<>() {});
+                if (tClass != null) {
+                    this.object = objectMapper.readValue(stream, tClass);
+                } else {
+                    this.object = objectMapper.readValue(stream, new TypeReference<T>() {});
+                }
             }
         } catch (JsonProcessingException e) {
             throw new FatalError(e);
@@ -104,13 +116,22 @@ public class JSONHandler<T> {
         }
     }
 
+    public static <T> JSONHandler<T> read(Path path) throws IOException {
+        return new JSONHandler<>(path);
+    }
+
+    public static <T> JSONHandler<T> read(Path path, Class<T> tClass) throws IOException {
+        return new JSONHandler<>(path, tClass);
+    }
+
     public static <T> JSONHandler<T> create(Path path, T object)  throws IOException {
         return create(path, object, true);
     }
 
     public static <T> JSONHandler<T> create(Path path, T object, boolean replaceExisting) throws IOException {
         if (!replaceExisting && path.toFile().exists()) {
-            return new JSONHandler<>(path);
+            //noinspection unchecked
+            return new JSONHandler<>(path, (Class<T>) object.getClass());
         }  else {
             return new JSONHandler<>(path, object);
         }

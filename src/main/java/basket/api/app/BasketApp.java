@@ -197,7 +197,7 @@ public abstract class BasketApp {
                 Files.copy(internalStream, externalPath);
             }
 
-            settingsHandler = new JSONHandler<>(externalPath);
+            settingsHandler = JSONHandler.read(externalPath);
         }
         catch (IOException e) {
             System.err.println("Could not create settings handler: " + e.getMessage());
