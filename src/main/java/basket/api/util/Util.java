@@ -10,6 +10,10 @@ public class Util {
         return path.toString().replace(File.separatorChar, '/');
     }
 
+    public static String pathToJavaString(String path) {
+        return path.replace(File.separatorChar, '/');
+    }
+
     public static String addParamsToUri(String uri, Map<String, Object> params) {
         var builder = new StringBuilder();
         builder.append(uri);

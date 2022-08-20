@@ -1,5 +1,7 @@
 package basket.api.handlers;
 
+import basket.api.prebuilt.Message;
+import basket.api.util.Util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -14,8 +16,6 @@ import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.JMetroStyleClass;
 import jfxtras.styles.jmetro.Style;
 import org.jetbrains.annotations.Nullable;
-import basket.api.prebuilt.Message;
-import basket.api.util.Util;
 
 import static basket.api.app.BasketApp.getImplementingClass;
 import static java.util.Objects.requireNonNull;
@@ -68,7 +68,7 @@ public class StyleHandler {
 
     public static StyleHandler with(PreBuiltStyle preBuiltStyle) {
         switch (preBuiltStyle) {
-            case DEFAULT, DEFAULT_NO_FOCUS -> {return new StyleHandler(preBuiltStyle.name(), Location.EXTERNAL);}
+            case DEFAULT, DEFAULT_NO_FOCUS -> {return new StyleHandler(preBuiltStyle.name() + ".css", Location.EXTERNAL);}
             case JMETRO -> {return new StyleHandler();}
             default -> throw new RuntimeException("This should never be thrown");
         }
@@ -92,7 +92,7 @@ public class StyleHandler {
                     return Optional.empty();
                 }
             }
-            case EXTERNAL -> path = "file:/" + location.pathGetter.apply(fileName);
+            case EXTERNAL -> path = "file:/" + Util.pathToJavaString(location.pathGetter.apply(fileName.toLowerCase()));
             default -> throw new RuntimeException("This should never be thrown");
         }
         return Optional.of(path);
