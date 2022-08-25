@@ -23,19 +23,6 @@ import static basket.api.util.uri.URIConstructor.toURI;
  * Use this class by implementing the {@code start} method, and then calling the {@code launch} method.
  * <p>
  * <p>
- * Some assumptions are made about the structure of your project:
- * <ul>
- *     <li>All resources files are in a directory tagged as a resources folder.</li>
- *     <li>Your resource folders are opened to the api module ({@code basket.api}) in the {@code module-info.java} file.</li>
- *     <li>Data ({@code .json}) files are in the {@code data} folder.
- *          <br> {@code _info.json} is a reserved file name, do not use it yourself.</li>
- *     <li>Optionally, you can put {@code settings.json} in the data folder to be used as standard settings.</li>
- *     <li>Images or other visual data are in the {@code images} folder.</li>
- *     <li>The main icon of your app is called {@code icon.png}</li>
- *     <li>Any style files ({@code .css}, {@code .ttf}) are in the {@code style} folder.</li>
- * </ul>
- * <p>
- * <p>
  * Two handler objects are made available through this class:
  * <ul>
  *     <li>{@code settingsHandler}, handler of the external settings ({@code .json}) file.</li>
@@ -52,7 +39,7 @@ import static basket.api.util.uri.URIConstructor.toURI;
  *     public static class MyApp extends BasketApp {
  *
  *         @Override
- *         protected @Nullable <NewT> TypeReference<NewT> makeSettingsObjectType() {
+ *         protected @Nullable Class<?> getSettingsObjectClass() {
  *             return null;
  *         }
  *
