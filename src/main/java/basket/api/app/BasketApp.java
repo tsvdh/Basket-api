@@ -4,6 +4,8 @@ import basket.api.handlers.FileHandler;
 import basket.api.handlers.JSONHandler;
 import basket.api.handlers.PathHandler;
 import basket.api.handlers.StyleHandler;
+import basket.api.handlers.StyleHandler.ApiStyle;
+import basket.api.handlers.StyleHandlerBuilder;
 import basket.api.util.FatalError;
 import basket.api.util.Util;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import jfxtras.styles.jmetro.Style;
 import org.jetbrains.annotations.Nullable;
 
 import static basket.api.util.uri.URIConstructor.toURI;
@@ -98,7 +101,10 @@ public abstract class BasketApp {
      * @return the style handler to use for the app
      */
     protected StyleHandler makeStyleHandler() {
-        return StyleHandler.with(StyleHandler.PreBuiltStyle.JMETRO);
+        return new StyleHandlerBuilder()
+                .setApiStyle(ApiStyle.JMETRO_TWEAKED)
+                .setJMetroStyle(Style.LIGHT)
+                .build();
     }
 
     /**
@@ -170,16 +176,16 @@ public abstract class BasketApp {
         }
 
         try {
-            Path internalPath = PathHandler.getInternalDataPath("settings.json");
-
-            InputStream internalStream = implementingClass.getResourceAsStream(Util.pathToJavaString(internalPath));
-            if (internalStream == null) {
-                throw new IOException("Could not find " + internalPath);
-            }
-
             Path externalPath = app.makeSettingsPath();
 
             if (!externalPath.toFile().exists()) {
+                Path internalPath = PathHandler.getInternalDataPath("settings.json");
+
+                InputStream internalStream = implementingClass.getResourceAsStream(Util.pathToJavaString(internalPath));
+                if (internalStream == null) {
+                    throw new IOException("Could not find " + internalPath);
+                }
+
                 FileHandler.makeFileDirectories(externalPath);
                 Files.copy(internalStream, externalPath);
             }

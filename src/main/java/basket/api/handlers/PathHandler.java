@@ -25,6 +25,8 @@ public class PathHandler {
         return Path.of(Native.toString(pszPath));
     }
 
+    // --- External ---
+
     public static Path getBasketHomePath() {
         return getPath(ShlObj.CSIDL_APPDATA).resolve(LAUNCHER_NAME);
     }
@@ -37,16 +39,18 @@ public class PathHandler {
         return getBasketHomePath().resolve("apps/library").resolve(appId);
     }
 
-    public static Path getInternalDataPath(String fileName) {
-        return Path.of("/data/" + fileName);
-    }
-
     public static Path getExternalFilePath(String fileName) {
         String appId = BasketApp.getAppId();
 
         Path folderPath = getAppDataPath(appId);
 
         return folderPath.resolve(fileName);
+    }
+
+    // --- Internal ---
+
+    public static Path getInternalDataPath(String fileName) {
+        return Path.of("/data/" + fileName);
     }
 
     public static Path getInternalImagesPath(String fileName) {
@@ -59,9 +63,5 @@ public class PathHandler {
 
     public static Path getInternalStylePath(String fileName) {
         return Path.of("/style/" + fileName);
-    }
-
-    public static Path getExternalStylePath(String fileName) {
-        return getBasketHomePath().resolve("resources/style/" + fileName);
     }
 }

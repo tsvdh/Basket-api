@@ -1,12 +1,12 @@
 package basket.api.handlers;
 
-import basket.api.prebuilt.Message;
 import basket.api.util.Util;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Path;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.LinkedList;
+import java.util.List;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
@@ -22,80 +22,73 @@ import static java.util.Objects.requireNonNull;
 
 public class StyleHandler {
 
-    public enum Location {
+    public enum ApiStyle {
+        DEFAULT,
+        DEFAULT_NO_FOCUS,
+        JMETRO_TWEAKED;
 
-        INTERNAL(PathHandler::getInternalStylePath),
-        EXTERNAL(PathHandler::getExternalStylePath);
-
-        Location(Function<String, Path> pathGetter) {
-            this.pathGetter = pathGetter;
+        private String toFilePath() {
+            return "/basket/api/style/%s.css".formatted(this.name().toLowerCase());
         }
-
-        private final Function<String, Path> pathGetter;
     }
 
-    public enum PreBuiltStyle {
-        DEFAULT, DEFAULT_NO_FOCUS, JMETRO
-    }
+    private @Nullable String apiFilePath;
 
-    private final String fileName;
-    private final Location location;
+    private final List<String> filePaths;
 
     private final @Nullable JMetro jMetro;
 
-    public StyleHandler() {
-        this(true, Style.LIGHT, null, null);
-    }
-
-    public StyleHandler(Style jMetroStyle) {
-        this(true, jMetroStyle, null, null);
-    }
-
-    public StyleHandler(String fileName, Location location) {
-        this(false, null, fileName, location);
-    }
-
-    public StyleHandler(boolean useJMetro, Style jMetroStyle, String fileName, Location location) {
-        this.fileName = fileName;
-        this.location = location;
-
-        if (useJMetro) {
+    public StyleHandler(@Nullable Style jMetroStyle, @Nullable ApiStyle apiStyle, @Nullable List<String> filePaths) {
+        if (jMetroStyle != null) {
             this.jMetro = new JMetro(jMetroStyle);
         } else {
             this.jMetro = null;
         }
-    }
 
-    public static StyleHandler with(PreBuiltStyle preBuiltStyle) {
-        switch (preBuiltStyle) {
-            case DEFAULT, DEFAULT_NO_FOCUS -> {return new StyleHandler(preBuiltStyle.name() + ".css", Location.EXTERNAL);}
-            case JMETRO -> {return new StyleHandler();}
-            default -> throw new RuntimeException("This should never be thrown");
+        if (apiStyle != null) {
+            this.apiFilePath = apiStyle.toFilePath();
+        }
+        if (filePaths != null) {
+            this.filePaths = new LinkedList<>(filePaths);
+        } else {
+            this.filePaths = new LinkedList<>();
         }
     }
 
-    private Optional<String> getStyleSheetPath() {
-        if (location == null) {
-            return Optional.empty();
+    public void setApiStyle(@Nullable ApiStyle apiStyle) {
+        if (apiStyle == null) {
+            this.apiFilePath = null;
+        } else {
+            this.apiFilePath = apiStyle.toFilePath();
         }
+    }
 
-        String path;
-        switch (location) {
-            case INTERNAL -> {
-                Path relativePath = location.pathGetter.apply(fileName);
-                try {
-                    path = requireNonNull(getImplementingClass().getResource(Util.pathToJavaString(relativePath))).toExternalForm();
-                } catch (NullPointerException e) {
-                    try {
-                        new Message("Unable to get internal stylesheet at: " + relativePath, true);
-                    } catch (IllegalStateException ignored) {}
-                    return Optional.empty();
-                }
+    public List<String> getFilePaths() {
+        return filePaths;
+    }
+
+    private List<String> getStyleSheetPaths() {
+        List<String> paths = new LinkedList<>();
+
+        if (apiFilePath != null) {
+            URL url = this.getClass().getResource(Util.pathToJavaString(apiFilePath));
+            if (url != null) {
+                paths.add(url.toExternalForm());
+            } else {
+                System.err.println("Unable to get api stylesheet at: " + apiFilePath);
             }
-            case EXTERNAL -> path = "file:/" + Util.pathToJavaString(location.pathGetter.apply(fileName.toLowerCase()));
-            default -> throw new RuntimeException("This should never be thrown");
         }
-        return Optional.of(path);
+
+        for (String filePath : filePaths) {
+            URL url = getImplementingClass().getResource(Util.pathToJavaString(filePath));
+            if (url != null) {
+                paths.add(url.toExternalForm());
+            } else {
+                System.err.println("Unable to get internal stylesheet at: " + filePath);
+            }
+        }
+
+        return paths;
     }
 
     public void applyStyleToApplication() {
@@ -122,8 +115,7 @@ public class StyleHandler {
             jMetro.setParent(root);
         }
 
-        Optional<String> optionalPath = this.getStyleSheetPath();
-        optionalPath.ifPresent(path -> root.getStylesheets().add(path));
+        root.getStylesheets().addAll(getStyleSheetPaths());
 
         setIcon(stage);
     }
@@ -142,6 +134,21 @@ public class StyleHandler {
                 Parent root = stage.getScene().getRoot();
                 jMetro.setParent(root);
             }
+        }
+    }
+
+    public void reApplyStyleSheets() {
+        for (Window window : Window.getWindows()) {
+            Stage stage;
+            try {
+                stage = (Stage) window;
+            } catch (ClassCastException e) {
+                continue;
+            }
+            Parent root = stage.getScene().getRoot();
+
+            root.getStylesheets().removeAll();
+            root.getStylesheets().addAll(getStyleSheetPaths());
         }
     }
 
