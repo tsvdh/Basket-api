@@ -8,11 +8,17 @@ import jfxtras.styles.jmetro.Style;
 public class StyleHandlerBuilder {
 
     private Style jMetroStyle;
+    private boolean useFXSkins;
     private ApiStyle apiStyle;
     private List<String> filePaths;
 
     public StyleHandlerBuilder setJMetroStyle(Style jMetroStyle) {
         this.jMetroStyle = jMetroStyle;
+        return this;
+    }
+
+    public StyleHandlerBuilder setUseFXSkins(boolean useFXSkins) {
+        this.useFXSkins = useFXSkins;
         return this;
     }
 
@@ -30,6 +36,6 @@ public class StyleHandlerBuilder {
     }
 
     public StyleHandler build() {
-        return new StyleHandler(jMetroStyle, apiStyle, filePaths);
+        return new StyleHandler(jMetroStyle, useFXSkins, apiStyle, filePaths);
     }
 }

@@ -1,12 +1,14 @@
 package basket.api.handlers;
 
 import basket.api.util.Util;
+import com.pixelduke.control.skin.FXSkins;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import javafx.collections.ListChangeListener;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
@@ -26,27 +28,36 @@ public class StyleHandler {
         DEFAULT,
         DEFAULT_NO_FOCUS,
         JMETRO_TWEAKED;
-
-        private String toFilePath() {
-            return "/basket/api/style/%s.css".formatted(this.name().toLowerCase());
-        }
     }
+
+    private static String apiStyleToFilePath(ApiStyle apiStyle) {
+        return apiStyleToFilePath(apiStyle.name());
+    }
+
+    private static String apiStyleToFilePath(String apiStyleName) {
+        return "/basket/api/style/%s.css".formatted(apiStyleName.toLowerCase());
+    }
+
+    private final @Nullable JMetro jMetro;
+
+    private boolean useFXSkins;
 
     private @Nullable String apiFilePath;
 
     private final List<String> filePaths;
 
-    private final @Nullable JMetro jMetro;
-
-    public StyleHandler(@Nullable Style jMetroStyle, @Nullable ApiStyle apiStyle, @Nullable List<String> filePaths) {
+    public StyleHandler(@Nullable Style jMetroStyle, boolean useFXSkins,
+                        @Nullable ApiStyle apiStyle, @Nullable List<String> filePaths) {
         if (jMetroStyle != null) {
             this.jMetro = new JMetro(jMetroStyle);
         } else {
             this.jMetro = null;
         }
 
+        this.useFXSkins = useFXSkins;
+
         if (apiStyle != null) {
-            this.apiFilePath = apiStyle.toFilePath();
+            this.apiFilePath = apiStyleToFilePath(apiStyle);
         }
         if (filePaths != null) {
             this.filePaths = new LinkedList<>(filePaths);
@@ -55,11 +66,15 @@ public class StyleHandler {
         }
     }
 
+    public void setUseFXSkins(boolean useFXSkins) {
+        this.useFXSkins = useFXSkins;
+    }
+
     public void setApiStyle(@Nullable ApiStyle apiStyle) {
         if (apiStyle == null) {
             this.apiFilePath = null;
         } else {
-            this.apiFilePath = apiStyle.toFilePath();
+            this.apiFilePath = apiStyleToFilePath(apiStyle);
         }
     }
 
@@ -70,25 +85,32 @@ public class StyleHandler {
     private List<String> getStyleSheetPaths() {
         List<String> paths = new LinkedList<>();
 
+        if (useFXSkins) {
+            paths.add(FXSkins.getStylesheetURL());
+        }
+
         if (apiFilePath != null) {
-            URL url = this.getClass().getResource(Util.pathToJavaString(apiFilePath));
-            if (url != null) {
-                paths.add(url.toExternalForm());
-            } else {
-                System.err.println("Unable to get api stylesheet at: " + apiFilePath);
-            }
+            String baseFilePath = apiStyleToFilePath("base");
+            loadAndGetStylesheet(this.getClass(), baseFilePath).ifPresent(paths::add);
+
+            loadAndGetStylesheet(this.getClass(), apiFilePath).ifPresent(paths::add);
         }
 
         for (String filePath : filePaths) {
-            URL url = getImplementingClass().getResource(Util.pathToJavaString(filePath));
-            if (url != null) {
-                paths.add(url.toExternalForm());
-            } else {
-                System.err.println("Unable to get internal stylesheet at: " + filePath);
-            }
+            loadAndGetStylesheet(getImplementingClass(), filePath).ifPresent(paths::add);
         }
 
         return paths;
+    }
+
+    private Optional<String> loadAndGetStylesheet(Class<?> loadingClass, String path) {
+        URL url = loadingClass.getResource(Util.pathToJavaString(path));
+        if (url != null) {
+            return Optional.of(url.toExternalForm());
+        } else {
+            System.err.println("Unable to get stylesheet at: " + path);
+            return Optional.empty();
+        }
     }
 
     public void applyStyleToApplication() {

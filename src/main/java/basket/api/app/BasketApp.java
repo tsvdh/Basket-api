@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import static basket.api.util.uri.URIConstructor.toURI;
 
 /**
+ * For more info about the general API, see the <a href="https://github.com/tsvdh/Basket-api">README</a>.
+ * <p>
  * The main class of the Basket API.
  * Use this class by implementing the {@code start} method, and then calling the {@code launch} method.
  * <p>
